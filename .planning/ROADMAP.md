@@ -15,7 +15,7 @@ deploy a build you have not verified clean.
 ## Phases
 
 - [x] **Phase 1: Rebrand source & identity** - update all current-identity copy/links, repoint the version fetch to GitHub, remove Subscribe
-- [ ] **Phase 2: Assets & build integrity** - regenerate OG/social assets, verify a clean build with no old-brand leakage
+- [x] **Phase 2: Assets & build integrity** - regenerate OG/social assets, verify a clean build with no old-brand leakage
 - [ ] **Phase 3: Deploy & go live** - Coolify deploy, staging HTTPS validation, apex cutover at jcrenshaw.dev
 
 ## Phase Details
