@@ -1,13 +1,11 @@
 ---
-import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getLatestCode } from '../lib/latestCode';
+import { getPublishedPosts } from '../lib/content';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '') || '';
 
-const posts = (await getCollection('posts'))
-  .filter((p) => p.data.type === 'post' && p.data.status !== 'draft' && p.data.visibility !== 'private')
-  .sort((a, b) => b.data.published_at.valueOf() - a.data.published_at.valueOf());
+const posts = await getPublishedPosts();
 
 const latest = posts[0];
 
@@ -18,14 +16,14 @@ const plain = (s: string) =>
   s.replace(/<[^>]+>/g, ' ').replace(/[#*_`>]/g, '').replace(/\s+/g, ' ').trim();
 
 const excerpt = (() => {
-  const raw = latest.data.excerpt || latest.data.meta_description || plain(latest.body);
+  const raw = latest.excerpt || latest.metaDescription || plain(latest.body);
   const t = plain(raw);
   return t.length > 165 ? t.slice(0, 162).replace(/\s+\S*$/, '') + '…' : t;
 })();
 
 const dateFmt = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-const latestDate = dateFmt.format(latest.data.published_at);
-const latestHref = `${base}/posts/${latest.data.slug ?? latest.id}`;
+const latestDate = dateFmt.format(latest.publishedAt);
+const latestHref = `${base}/posts/${latest.slug}`;
 
 // Latest code — Tempest's version comes from the GitHub API at build time (curated fallback if offline).
 const latestCode = await getLatestCode();
@@ -131,7 +129,7 @@ const markSrc = `${base}/favicon.svg`;
       <div class="desk">
         <article class="card">
           <p class="card-label">Writing</p>
-          <a class="essay-title" href={latestHref}>{latest.data.title}</a>
+          <a class="essay-title" href={latestHref}>{latest.title}</a>
           <p class="essay-meta">{latestDate} · {readMin(latest.body)} min read</p>
           <p class="essay-excerpt">{excerpt}</p>
           <a class="card-link" href={latestHref}>Read the argument →</a>
