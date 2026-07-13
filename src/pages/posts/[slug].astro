@@ -1,7 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Subscribe from '../../components/Subscribe.astro';
 
 export async function getStaticPaths() {
   const all = await getCollection('posts');
@@ -54,8 +53,6 @@ const num = String(index).padStart(2, '0');
     <div class="prose">
       <Content />
     </div>
-
-    <Subscribe />
 
     <div class="post-foot">
       <a href={`${base}/writing`}>← index</a>
