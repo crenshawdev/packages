@@ -1,0 +1,45 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="weathervane"
+  description="Weather, air quality, and alerts from public APIs, returned as clean Rust types. The engine behind Tempest, as a standalone crate."
+  windowTitle="weathervane"
+  windowSeg="code"
+  active="code"
+  ogImage="/weathervane-og.png?v=2026-06"
+>
+  <div class="room-head">
+    <h1 class="room-title">weathervane</h1>
+    <p class="room-lead">Weather, air quality, and alerts from public APIs — as clean Rust types. The engine behind Tempest, pulled into a crate.</p>
+  </div>
+
+  <div class="badges">
+    <span class="badge">Rust</span>
+    <span class="badge">v0.5.0</span>
+    <span class="badge">MIT / Apache-2.0</span>
+    <span class="badge">crates.io</span>
+    <span class="badge">docs.rs</span>
+  </div>
+
+  <div class="prose">
+    <p>You call the async functions, you get back clean Rust types. That's it. Weathervane fetches the data, parses the responses, handles unit conversions, and gets out of the way. No UI dependencies. No polling. No timers. No config storage. The frontend owns all of that.</p>
+
+    <p>Open-Meteo by default, no key required. Inside Japan it swaps the current temperature for the nearest JMA AMeDAS station, because Open-Meteo runs a few degrees cold there. Air quality can use a free aqicn.org token outside Europe; pollutant concentrations always come from Open-Meteo so the µg/m³ contract stays honest. Pollen is Europe-only — six species, by way of CAMS.</p>
+
+    <p>It came out of Tempest in 2.6.0: roughly 1,700 lines moved out of the applet tree so the data layer could stand on its own and be tested without a GUI attached.</p>
+
+    <pre><code>cargo add weathervane</code></pre>
+  </div>
+
+  <section class="worklog" aria-label="Crate links">
+    <p class="worklog-label">links</p>
+    <dl class="worklog-list">
+      <div class="worklog-row"><dt>crates.io</dt><dd><a href="https://crates.io/crates/weathervane">crates.io/crates/weathervane</a></dd></div>
+      <div class="worklog-row"><dt>docs</dt><dd><a href="https://docs.rs/weathervane">docs.rs/weathervane</a></dd></div>
+      <div class="worklog-row"><dt>source</dt><dd><a href="https://gitlab.com/vintagetechie/weathervane">gitlab.com/vintagetechie</a></dd></div>
+      <div class="worklog-row"><dt>used by</dt><dd><a href="/code/tempest">tempest</a></dd></div>
+    </dl>
+  </section>
+</BaseLayout>

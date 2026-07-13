@@ -1,0 +1,55 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const all = await getCollection('posts');
+const posts = all
+  .filter((p) => p.data.type === 'post' && p.data.status !== 'draft' && p.data.visibility !== 'private')
+  .sort((a, b) => b.data.published_at.valueOf() - a.data.published_at.valueOf());
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '') || '';
+
+const monthFmt = new Intl.DateTimeFormat('en-US', { month: 'short' });
+const dayFmt = new Intl.DateTimeFormat('en-US', { day: '2-digit' });
+
+const totalWords = posts.reduce((acc, p) => acc + p.body.trim().split(/\s+/).filter(Boolean).length, 0);
+const wordsLabel = totalWords >= 1000 ? `${Math.round(totalWords / 1000)}k` : `${totalWords}`;
+
+type Group = { year: number; items: typeof posts };
+const groups: Group[] = [];
+for (const p of posts) {
+  const y = p.data.published_at.getUTCFullYear();
+  const g = groups.find((x) => x.year === y);
+  if (g) g.items.push(p);
+  else groups.push({ year: y, items: [p] });
+}
+
+const readMin = (body: string) => Math.max(1, Math.round(body.trim().split(/\s+/).filter(Boolean).length / 220));
+---
+
+<BaseLayout title="Writing" description="Essays by John Crenshaw." windowTitle="Writing" active="writing">
+  <div class="idx-head">
+    <h1 class="room-title">All writing</h1>
+    <span class="idx-count">{posts.length} entries · ~{wordsLabel} words</span>
+  </div>
+
+  {groups.map((g) => (
+    <>
+      <div class="year-head"><span>{g.year}</span></div>
+      <ol class="entries">
+        {g.items.map((post) => {
+          const d = post.data.published_at;
+          const date = `${monthFmt.format(d).toLowerCase()} ${dayFmt.format(d)}`;
+          const tag = post.data.tags?.[0] ?? 'note';
+          return (
+            <li class="entry">
+              <span class="entry-date">{date}</span>
+              <a class="entry-title" href={`${base}/posts/${post.data.slug ?? post.id}`}>{post.data.title}</a>
+              <span class="entry-meta">{readMin(post.body)} min · {tag}</span>
+            </li>
+          );
+        })}
+      </ol>
+    </>
+  ))}
+</BaseLayout>

@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0e1218"/>
+
+  <!-- topbar -->
+  <line x1="0" y1="64" x2="1200" y2="64" stroke="#232830" stroke-width="1"/>
+  <text x="48" y="42" font-family="'IBM Plex Mono', 'DejaVu Sans Mono', monospace"
+        font-size="16" fill="#6e7783">~/</text>
+  <text x="68" y="42" font-family="'IBM Plex Mono', 'DejaVu Sans Mono', monospace"
+        font-size="16" fill="#dee3ea">about</text>
+  <text x="1152" y="42" text-anchor="end"
+        font-family="'IBM Plex Mono', 'DejaVu Sans Mono', monospace"
+        font-size="16" fill="#a3acb6">retired · writing</text>
+
+  <!-- left column: brand + tagline -->
+  <text x="48" y="220"
+        font-family="'IBM Plex Sans', 'DejaVu Sans', sans-serif" font-weight="700"
+        font-size="76" fill="#dee3ea" letter-spacing="-1.5">John Crenshaw</text>
+  <text x="48" y="258"
+        font-family="'IBM Plex Mono', 'DejaVu Sans Mono', monospace"
+        font-size="18" fill="#6e7783" letter-spacing="0.4">software engineer, ret.</text>
+
+  <text x="48" y="356"
+        font-family="'IBM Plex Sans', 'DejaVu Sans', sans-serif"
+        font-size="28" fill="#a3acb6">Notes on Linux, Rust, retirement, and</text>
+  <text x="48" y="396"
+        font-family="'IBM Plex Sans', 'DejaVu Sans', sans-serif"
+        font-size="28" fill="#a3acb6">shipping software you actually understand.</text>
+
+  <!-- callsign panel -->
+  <rect x="720" y="170" width="432" height="248" fill="#161a22" stroke="#232830" stroke-width="1"/>
+  <!-- notch chip -->
+  <rect x="736" y="158" width="78" height="20" fill="#0e1218"/>
+  <text x="744" y="173"
+        font-family="'IBM Plex Mono', 'DejaVu Sans Mono', monospace"
+        font-size="13" fill="#a3acb6" letter-spacing="1.2">john@~</text>
+
+  <g font-family="'IBM Plex Mono', 'DejaVu Sans Mono', monospace" font-size="17">
+    <text x="744" y="216" fill="#a3acb6">status:</text><text x="836" y="216" fill="#5cff85">retired</text>
+    <text x="744" y="248" fill="#a3acb6">based:</text> <text x="836" y="248" fill="#5cff85">Indianapolis</text>
+    <text x="744" y="280" fill="#a3acb6">since:</text> <text x="836" y="280" fill="#5cff85">1981 → 2024</text>
+    <text x="744" y="312" fill="#a3acb6">stack:</text> <text x="836" y="312" fill="#5cff85" opacity="0.85">rust, c#, c</text>
+    <text x="744" y="344" fill="#a3acb6">os:</text>    <text x="836" y="344" fill="#5cff85" opacity="0.85">arch + cosmic</text>
+    <text x="744" y="376" fill="#a3acb6">editor:</text><text x="836" y="376" fill="#5cff85" opacity="0.85">nano</text>
+  </g>
+
+  <!-- footer -->
+  <line x1="0" y1="566" x2="1200" y2="566" stroke="#232830" stroke-width="1"/>
+  <text x="48" y="598"
+        font-family="'IBM Plex Mono', 'DejaVu Sans Mono', monospace"
+        font-size="15" fill="#6e7783">jcrenshaw.dev</text>
+  <text x="1152" y="598" text-anchor="end"
+        font-family="'IBM Plex Mono', 'DejaVu Sans Mono', monospace"
+        font-size="15" fill="#6e7783">blog.vintagetechie.com</text>
+</svg>

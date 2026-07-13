@@ -1,0 +1,116 @@
+---
+import '../styles/global.css';
+import { Font } from 'astro:assets';
+import { ClientRouter } from 'astro:transitions';
+import Panel from '../components/Panel.astro';
+import Dock from '../components/Dock.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** When set, the page renders inside a desktop window with this title. */
+  windowTitle?: string;
+  /** Optional dimmed path segment shown before the window title (e.g. "writing /"). */
+  windowSeg?: string;
+  /** Which dock app is active. Inferred from the path when omitted. */
+  active?: 'about' | 'code' | 'writing';
+  /** Override the social card. Path under the site root incl. cache-bust query,
+   *  e.g. "/tempest-og.png?v=2026-06". Defaults to the site-wide card. */
+  ogImage?: string;
+}
+
+const { title, description, windowTitle, windowSeg, active, ogImage: ogImageProp } = Astro.props;
+const siteTitle = 'John Crenshaw';
+const fullTitle = title === siteTitle ? title : `${title} · ${siteTitle}`;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '') || '';
+
+const norm = Astro.url.pathname.replace(/\/$/, '') || '/';
+const stripBase = norm.startsWith(base) ? norm.slice(base.length) : norm;
+const seg = stripBase.replace(/^\//, '').split('/')[0] || '';
+let activeApp: Props['active'] = active;
+if (!activeApp) {
+  if (seg === 'about') activeApp = 'about';
+  else if (seg === 'code') activeApp = 'code';
+  else if (seg === 'writing' || seg === 'posts') activeApp = 'writing';
+}
+
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+// Bump ?v when the card art changes so Facebook/Mastodon re-fetch instead of
+// serving a stale cached preview (they cache keyed on the image URL).
+const ogImage = new URL(`${base}${ogImageProp ?? '/og-image.png?v=2026-06'}`, Astro.site).toString();
+const ogDescription =
+  description ?? 'Notes on Linux, Rust, retirement, and shipping software you actually understand.';
+
+const clock = new Intl.DateTimeFormat([], { hour: 'numeric', minute: '2-digit' }).format(new Date());
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b0e13" />
+    <title>{fullTitle}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteTitle} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={ogDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={ogDescription} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <Font cssVariable="--font-ibm-plex-sans" preload />
+    <Font cssVariable="--font-ibm-plex-mono" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="alternate" type="application/rss+xml" title="John Crenshaw — Writing" href="/rss.xml" />
+    <ClientRouter />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="shell">
+      <Panel base={base} clock={clock} />
+
+      {windowTitle ? (
+        <main class="desktop" id="main">
+          <div class="window-wrap">
+            <section class="window" aria-label={windowTitle}>
+              <div class="window-bar">
+                <span class="window-controls">
+                  <a class="window-close" href={`${base}/`} aria-label="Close window, back to desktop"></a>
+                  <span class="ctl" aria-hidden="true"></span>
+                  <span class="ctl" aria-hidden="true"></span>
+                </span>
+                <span class="window-title">
+                  {windowSeg && <span class="seg">{windowSeg} / </span>}{windowTitle}
+                </span>
+              </div>
+              <div class="window-body">
+                <slot />
+              </div>
+            </section>
+          </div>
+        </main>
+      ) : (
+        <main class="desktop" id="main">
+          <slot />
+        </main>
+      )}
+
+      <Dock base={base} active={activeApp} />
+
+      <slot name="overlay" />
+    </div>
+  </body>
+</html>

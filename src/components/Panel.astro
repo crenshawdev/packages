@@ -1,0 +1,35 @@
+---
+interface Props {
+  base?: string;
+  clock: string;
+}
+const { base = '', clock } = Astro.props;
+---
+
+<header class="panel" transition:persist>
+  <a class="panel-home" href={`${base}/`} aria-label="jcrenshaw.dev home">
+    <span class="dot" aria-hidden="true"></span>
+    <span>jcrenshaw.dev</span>
+  </a>
+  <div class="panel-tray">
+    <span>john</span>
+    <span class="sep" aria-hidden="true">·</span>
+    <time id="panel-clock" datetime={clock}>{clock}</time>
+  </div>
+</header>
+
+<script>
+  // Progressive enhancement: live-update the panel clock.
+  // Server renders a static fallback so it is never blank without JS.
+  const el = document.getElementById('panel-clock');
+  if (el) {
+    const fmt = new Intl.DateTimeFormat([], { hour: 'numeric', minute: '2-digit' });
+    const tick = () => {
+      const now = new Date();
+      el.textContent = fmt.format(now);
+      el.setAttribute('datetime', now.toTimeString().slice(0, 5));
+    };
+    tick();
+    setInterval(tick, 15_000);
+  }
+</script>

@@ -1,0 +1,34 @@
+---
+import { getEntry, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const about = await getEntry('posts', 'about');
+const { Content } = await render(about);
+---
+
+<BaseLayout
+  title="About"
+  description="Four decades of software engineering, now retired and writing Rust for the Linux desktop. About John Crenshaw."
+  windowTitle="About"
+  active="about"
+>
+  <div class="room-head">
+    <p class="room-lead">
+      I built other people's software for a living. Now I build my own.
+    </p>
+  </div>
+  <div class="prose">
+    <Content />
+  </div>
+
+  <section class="worklog" aria-label="Selected systems">
+    <p class="worklog-label">selected systems</p>
+    <dl class="worklog-list">
+      <div class="worklog-row"><dt>retinal biometric access control</dt><dd>eas technologies</dd></div>
+      <div class="worklog-row"><dt>intel eprom tooling, pre-release</dt><dd>eas technologies</dd></div>
+      <div class="worklog-row"><dt>cobol trading system &rarr; c#</dt><dd>wall street &middot; y2k</dd></div>
+      <div class="worklog-row"><dt>workbroker idle-pc compute grid</dt><dd>the rawlings co.</dd></div>
+      <div class="worklog-row"><dt>smpp / sms at platform scale</dt><dd>salesforce</dd></div>
+    </dl>
+  </section>
+</BaseLayout>

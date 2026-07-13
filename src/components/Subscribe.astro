@@ -1,0 +1,31 @@
+---
+// Blog-post alert signup. Posts straight to Listmonk's public subscription
+// endpoint (no JS). Field contract reproduced verbatim from Listmonk's own
+// generated form: empty `nonce` honeypot, and the "Blog Post" list as a checked
+// `l` checkbox. Do not restructure these fields.
+---
+
+<section class="subscribe" aria-labelledby="subscribe-h">
+  <p class="room-eyebrow">newsfeed</p>
+  <h2 id="subscribe-h">Subscribe</h2>
+
+  <form method="post" action="https://newsletter.jcrenshaw.dev/subscription/form" class="subscribe-form">
+    <input type="hidden" name="nonce" />
+
+    <div class="subscribe-fields">
+      <input type="email" name="email" required placeholder="you@example.com" aria-label="E-mail" />
+      <input type="text" name="name" placeholder="Name (optional)" aria-label="Name (optional)" />
+      <button type="submit">Subscribe</button>
+    </div>
+
+    <p class="subscribe-list">
+      <input id="l-911f4" type="checkbox" name="l" checked value="911f4930-5079-41bb-8fd3-22c5441ffbc3" />
+      <label for="l-911f4">Blog Post</label>
+      <span>A heads-up when I publish a new post. This is the one. It alerts you that something new is up, it doesn't mail you the essay.</span>
+    </p>
+  </form>
+
+  <p class="subscribe-more">
+    <a href="https://newsletter.jcrenshaw.dev/subscription/form">See all my lists →</a>
+  </p>
+</section>

@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Tempest"
+  description="A weather applet for the COSMIC desktop — current conditions, forecasts, a 24-hour meteogram, alerts, and air quality. No account, no API key."
+  windowTitle="tempest"
+  windowSeg="code"
+  active="code"
+  ogImage="/tempest-og.png?v=2026-06"
+>
+  <div class="room-head">
+    <h1 class="room-title">Tempest</h1>
+    <p class="room-lead">A weather applet for the COSMIC desktop. It lives in the panel and tells you what the sky is doing.</p>
+  </div>
+
+  <div class="badges">
+    <span class="badge">Rust</span>
+    <span class="badge">v2.9.0</span>
+    <span class="badge">GPL-3.0</span>
+    <span class="badge">AUR</span>
+    <span class="badge">Flatpak</span>
+    <span class="badge">deb</span>
+    <span class="badge">rpm</span>
+  </div>
+
+  <div class="prose">
+    <p>Current conditions, an hourly forecast, a seven-day forecast, a 24-hour meteogram, weather alerts, and air quality — in the panel and a tabbed popup. Location resolves by IP, city search, or manual coordinates, and you can bookmark up to eight and switch from the popup header.</p>
+
+    <p>The data comes from public APIs through <a href="/code/weathervane">weathervane</a>, the library the weather logic was pulled into back in 2.6.0. Open-Meteo by default. In Japan the current temperature comes from JMA's AMeDAS ground stations, because the blended model runs cold in East Asia. Alerts come from NWS, ECCC, MeteoAlarm, and BOM. No account, no API key.</p>
+
+    <p>It's self-distributed — on the AUR, from my own Flatpak remote, and from my own APT and RPM repos. It's not in the COSMIC Store.</p>
+
+    <pre><code># Arch (AUR)
+paru -S cosmic-ext-applet-tempest
+
+# Flatpak (self-hosted remote)
+flatpak remote-add --if-not-exists jcrenshaw https://dl.jcrenshaw.dev/jcrenshaw.flatpakrepo
+flatpak install jcrenshaw com.vintagetechie.CosmicExtAppletTempest
+
+# Debian / Ubuntu (APT)
+curl -fsSL https://pkg.jcrenshaw.dev/vintagetechie.asc | sudo gpg --dearmor -o /usr/share/keyrings/vintagetechie.gpg
+echo "deb [signed-by=/usr/share/keyrings/vintagetechie.gpg] https://pkg.jcrenshaw.dev/deb stable main" | sudo tee /etc/apt/sources.list.d/vintagetechie.list
+sudo apt update &amp;&amp; sudo apt install cosmic-ext-applet-tempest
+
+# Fedora (DNF)
+sudo curl -fsSL -o /etc/yum.repos.d/vintagetechie.repo https://pkg.jcrenshaw.dev/rpm/vintagetechie.repo
+sudo dnf install cosmic-ext-applet-tempest</code></pre>
+  </div>
+
+  <section class="worklog" aria-label="Project links">
+    <p class="worklog-label">links</p>
+    <dl class="worklog-list">
+      <div class="worklog-row"><dt>source</dt><dd><a href="https://gitlab.com/vintagetechie/cosmic-ext-applet-tempest">gitlab.com/vintagetechie</a></dd></div>
+      <div class="worklog-row"><dt>releases</dt><dd><a href="https://gitlab.com/vintagetechie/cosmic-ext-applet-tempest/-/tags">all versions</a></dd></div>
+      <div class="worklog-row"><dt>data engine</dt><dd><a href="/code/weathervane">weathervane</a></dd></div>
+    </dl>
+  </section>
+</BaseLayout>

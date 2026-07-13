@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getLatestCode } from '../lib/latestCode';
+
+// Tempest's version comes from the GitLab API at build time; the rest are sourced from each repo's Cargo.toml.
+const tempest = await getLatestCode();
+const tempestReleased = tempest.released
+  ? ` · ${new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric' }).format(new Date(tempest.released))}`
+  : '';
+const projects = [
+  {
+    name: 'cosmic-ext-applet-tempest',
+    meta: `Rust · ${tempest.version}${tempestReleased}`,
+    desc: 'A weather applet for COSMIC. Current conditions, forecasts, alerts, and air quality, with no account and no API key. Self-distributed as a Flatpak.',
+    href: '/code/tempest',
+    live: true,
+  },
+  {
+    name: 'weathervane',
+    meta: 'Rust · v0.9.1',
+    desc: 'Weather, air quality, and alerts from public APIs, returned as clean Rust types. No UI, no polling, no config storage: you call the async functions and get data back. Published on crates.io.',
+    href: '/code/weathervane',
+    live: true,
+  },
+  {
+    name: 'powercurve',
+    meta: 'Rust · v0.4.0',
+    desc: 'A Linux power-management daemon with built-in fan curves, compatible with power-profiles-daemon so existing desktop tooling keeps working. On the AUR and as a Debian package.',
+    href: 'https://gitlab.com/vintagetechie/powercurve',
+    live: true,
+  },
+];
+---
+
+<BaseLayout
+  title="Code"
+  description="Rust tools for the Linux desktop by John Crenshaw (VintageTechie)."
+  windowTitle="Code"
+  active="code"
+>
+  <div class="room-head">
+    <h1 class="room-title">Code</h1>
+    <p class="room-lead">Rust tools for the Linux desktop, built in the open and distributed on my own terms.</p>
+  </div>
+
+  <div class="projects">
+    {projects.map((p) => (
+      <a class="project" href={p.href}>
+        <div class="project-top">
+          <span class="project-name">{p.name}</span>
+          <span class="project-meta">
+            {p.live && <span class="live"><span class="pulse" aria-hidden="true"></span>live </span>}
+            {p.meta}
+          </span>
+        </div>
+        {p.desc && <p class="project-desc">{p.desc}</p>}
+      </a>
+    ))}
+  </div>
+
+  <p style="margin-top:28px;font-family:var(--mono);font-size:12px;color:var(--ink-4)">
+    All repositories live at <a href="https://gitlab.com/vintagetechie">gitlab.com/vintagetechie ↗</a>
+  </p>
+</BaseLayout>

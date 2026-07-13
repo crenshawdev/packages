@@ -1,0 +1,15 @@
+---
+title: "Why I Started Writing Rust in Retirement"
+slug: "why-i-started-writing-rust-in-retirement"
+type: post
+status: published
+visibility: public
+featured: false
+created_at: 2026-01-25T19:37:40.000Z
+updated_at: 2026-01-26T23:55:12.000Z
+published_at: 2026-01-25T19:43:11.000Z
+authors:
+  - "John Crenshaw"
+---
+
+<hr><p>I retired in March 2024 after 40 years of writing software. A decade at Salesforce, and before that a long trail of jobs going back to the early 80s. I was done with sprints and Jira tickets and getting paged at 2 AM, it was time to relax.</p><p>I don't golf, hate fishing, hiking, well exercise really, so I gamed, and probably too much. I spent way too much time tweaking overlay configs and comparing RAM usage between Windows and Linux. Eventually I needed something else.</p><p>I'd been running Pop!_OS with the COSMIC desktop beta. It's written in Rust, still rough around the edges, but the bones are good.</p><p>I found a weather applet for it that looked promising. Installed it and opened the settings. It wanted me to enter longitude and latitude manually. No city lookup, zip code, or "use my location" option. Just raw coordinates. This isn't 1981, people, how hard is it to add a lookup? This problem has been solved, there are free APIs, but someone shipped it anyway because good enough to compile is good enough to release, apparently.<br><br>I complained to Ben about it a lot. He's had 13 years of marriage to get used to me griping about bad software, so his response was predictable: "Learn Rust and do better." He wasn't wrong. I'd spent 40 years getting paid to solve problems like this. Now I was just griping about them instead of fixing them.</p><p>I didn't know Rust. I'd done Clarion, VB6, C#, C++, Java. Rust was new territory. But I had time. Well, I'm 69, so maybe not that much time, but enough. I had a specific problem I wanted to solve and honestly, something to prove.</p><p>Tempest started as "weather applet that doesn't suck." The basics came together faster than I expected. Rust is unforgiving, but it wouldn't let me make the memory mistakes I'd spent 40 years debugging. Gave me time to tweak other areas.</p><p>I kept going and added proper error handling, internationalization through Weblate so it works in languages I don't speak, flatpak packaging so people can actually install it. It's at version 2.2.0 now.</p><p>I really did think I was done writing code. Turns out I just didn't want to write it for other people anymore.</p><p>No standups, sprint planning, or stakeholders asking for status updates. Just me, my workstation, and whatever problem seems interesting that day. I can spend a week figuring out why a particular libcosmic API behaves weirdly, or take a month off to play Elite Dangerous. Nobody's tracking my velocity.</p><p>My apps are on Codeberg under VintageTechie. Nobody's clamoring for them. I built them because I wanted them to exist, and because my husband called my bluff. Spite is a valid motivator.</p>

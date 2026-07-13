@@ -1,0 +1,46 @@
+---
+title: "The Last Default"
+slug: "the-last-default"
+type: post
+status: published
+visibility: public
+featured: false
+excerpt: "The always-on laptop running my home network kernel panicked on Ubuntu, and I took the crash as the excuse I'd been waiting for. Here's the security-first Proxmox server I rebuilt in its place, and why the last machine in the house running on someone else's defaults doesn't anymore."
+created_at: 2026-07-12T14:00:00.000Z
+updated_at: 2026-07-12T14:00:00.000Z
+published_at: 2026-07-12T14:00:00.000Z
+authors:
+  - "John Crenshaw"
+tags:
+  - "linux"
+  - "security"
+  - "proxmox"
+  - "self-hosting"
+  - "system76"
+---
+
+<p>My laptop kernel panicked on Ubuntu 24.04, froze mid-task, and the unsettling part was how little happened next. DNS failed over to Cloudflare the way I'd built it to, the internet kept working, and nobody in the house noticed a thing. What went down with the box was the protection. Pi-hole and Unbound had been resolving and filtering every lookup on the network, and with them gone every device was pointed straight at the open internet with nothing standing in front of it. Nothing caught fire, nothing even blinked, and that was the problem. I'd stacked the whole household onto one machine and never really planned for the night it fell over.</p>
+
+<p>I'd been meaning to deal with it anyway. Ubuntu 24.04 was aging under me, another LTS with packages drifting further behind every month, and I knew the upgrade was coming whether I wanted it or not. My first thought was Fedora. I'd bounced off RPM before, but I figured I owed it another honest look. Then I fell down a different hole and landed on Proxmox, and the whole shape of the problem changed.</p>
+
+<p>Here's the part that made me sit back. This laptop is a System76 Adder WS, and it's the same machine I wrote about in <a href="/posts/still-skidding-broadside">Still Skidding Broadside</a>, the one I bought when I retired and left Windows for good. It shipped with Pop!_OS installed, which meant even my first Linux machine arrived carrying somebody else's choice, and I said at the time the pattern was hard to break. A couple of years later it was still running a distro that got handed to me, quietly holding up the network while I went and built the rest of my computing life on Arch on a different machine. It was the last default in the house. The one box I'd never actually sat down and made mine. And it took a kernel panic to make me do it.</p>
+
+<p>A dead server early on a Saturday morning is a pain in the ass, I won't pretend otherwise. But life has a way of throwing surprises that turn out to be openings, and I've learned to take them when they come, because I've had a lot of practice starting over from a worse position than this. This time I had a working excuse to stop patching someone else's defaults and build the thing I actually wanted, and I took it slow, researched it properly, and picked what I thought was first in class instead of grabbing whatever was fastest to reinstall.</p>
+
+<p>Proxmox won because it isn't really a distro at all. Debian underneath, which I trust, and on top of it a hypervisor that lets me carve one machine into as many small isolated ones as I want. That mattered more than it sounds, because the way I build things has one rule sitting under all the others, and I wrote a whole post about it once. Reduce the attack surface. Ports you don't open can't be exploited, services you don't run can't be compromised, and features you don't ship can't betray you. I called that piece <a href="/posts/death-by-yes">Death by Yes</a>, and the home network it described, the paranoid sysadmin's fever dream with Pi-hole feeding Unbound and no port forwards and no remote access, was running on this exact laptop the night it died. Proxmox let me take that instinct and make it structural instead of just careful.</p>
+
+<p>Instead of one Ubuntu box running everything in a single blast radius, I split it into a row of unprivileged containers, one service to a container, a dozen of them and counting. DNS in its own box. The reverse proxy in its own box. Metrics, uptime monitoring, the push-notification sink, the intrusion detection, each one walled off from the others, a problem in one can't wander into the rest. Every container is default-deny on the way in. Nothing accepts a connection it wasn't explicitly told to accept, SSH only answers to my workstation, and the services talk on the exact ports they need and not one more.</p>
+
+<p>DNS got the biggest upgrade. Pi-hole and Unbound were good to me for a few years, but I replaced them with Technitium running as two independent instances, so the network keeps resolving if either one falls over, both of them doing their own recursion and DNSSEC and ad-blocking. The single point of failure that left every device exposed is gone. Nothing in here reaches the public internet through an open door either. The only things exposed at all, a push-notification server, a private Matrix chat for the household, and the list server that runs my newsletter, ride out through a Cloudflare tunnel, which means there is no port forwarded on my router, no public IP to find, no VPN endpoint sitting there waiting to be probed. The machine reaches out. Nothing reaches in.</p>
+
+<p>The rest is the boring stuff that turns out to matter at three in the morning. Suricata watching the wire, CrowdSec at both the network and the HTTP layer, Wazuh running host intrusion detection and a CIS security audit against every container twice a day. Backups every night to a Proxmox Backup Server, encrypted on the client side before they ever touch the disk, pruned on a schedule and pushed offsite to encrypted object storage, and a fire or a dead drive doesn't end the story. All of it, every alert from every layer, funnels down to one topic on my phone, and the machine tells me when something's wrong instead of me finding out when the house goes quiet.</p>
+
+<p>My favorite detail is the dumbest one. It's a laptop, which means it has a battery, which means it came with a UPS bolted to the bottom of it from the factory. It sits headless with the lid closed, and if the power drops it runs on the battery and shuts itself down cleanly before it dies, which is exactly the behavior I'd have gone out and bought a UPS to get. The thing I bought as a portable workstation turned out to be a better server than most of the servers I ran for other people, mostly because it never leaves my hands and I know every layer of it. I still trust the metal, too. System76 hardware has earned that, right down to the time my desktop died and the RMA felt like dealing with <a href="/posts/one-week-door-to-door">engineers instead of a support desk</a>. I've walked away from their app store and I run my applets through <a href="/posts/i-built-my-own-door">my own door</a> now, but the laptop under all this is theirs, and it has never once given me a reason to regret the metal.</p>
+
+<p>I want to be honest about how a retired guy stands up a dozen hardened containers and a full monitoring stack by himself, because a year ago I couldn't have. I've been learning to run AI tooling the way I wrote about in <a href="/posts/the-gap-runs-both-ways">The Gap Runs Both Ways</a>, not the chat box everyone pokes at, but the real thing underneath it, agents with enforcement gates and model routing and a budget you actually manage. This build is what that fluency is for. I still made every architectural call, I still know what each piece does and why it's there, because that's the part you don't get to hand off. But the grunt work of standing up a container, wiring a firewall rule, writing the fortieth systemd unit, that got faster in a way that made a project this size possible for one person across a reasonable stretch of evenings. The judgment stayed mine. The typing got help. Anyone who tells you those are the same thing hasn't done either one well.</p>
+
+<p>None of this is new for me. I've been building my own since long before it was ever about computers, back when the family I was born into couldn't handle who I loved and we built our own out of whoever showed up, back when the institutions that were supposed to catch people decided some of us weren't worth catching and we caught each other instead. The defaults were always built for somebody else, and the only ground I ever trusted was the ground I laid myself. A home server is a small thing next to that. It runs on the same reflex.</p>
+
+<p>I named it minas-tirith, after the fortress city, which is either exactly as dramatic as a household server deserves or nowhere near dramatic enough, depending on how the night is going. It's back up now, headless on a shelf, doing more than it ever did on Ubuntu and doing all of it on my terms. Every container is there because I put it there. Every port that's closed is closed because I closed it. The last default in the house is gone.</p>
+
+<p>I keep landing on the same rule, in the code and everywhere else. Don't build your life on a default you didn't choose, because the day it fails is the day you find out whose it really was. Mine failed on a Saturday morning, and I rebuilt it from the disk up. Now it's mine.</p>

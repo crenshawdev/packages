@@ -1,0 +1,56 @@
+---
+interface Props {
+  active?: 'about' | 'code' | 'writing';
+  base?: string;
+}
+const { active, base = '' } = Astro.props;
+---
+
+<nav class="dock" aria-label="Sections">
+  <a
+    class="dock-app"
+    href={`${base}/about`}
+    aria-current={active === 'about' ? 'page' : undefined}
+  >
+    <span class="icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4"></circle><path d="M5.5 19.5c0-3.7 3-5.6 6.5-5.6s6.5 1.9 6.5 5.6"></path></svg>
+    </span>
+    <span class="label">About</span>
+  </a>
+
+  <a
+    class="dock-app"
+    href={`${base}/code`}
+    aria-current={active === 'code' ? 'page' : undefined}
+  >
+    <span class="icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.4"></rect><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.4"></rect><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.4"></rect><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.4"></rect></svg>
+    </span>
+    <span class="label">Code</span>
+  </a>
+
+  <a
+    class="dock-app"
+    href={`${base}/writing`}
+    aria-current={active === 'writing' ? 'page' : undefined}
+  >
+    <span class="icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M7 3.5h7l4 4V20.5H7z"></path><path d="M14 3.5V8h4"></path><path d="M9.5 12.5h7M9.5 15.5h5"></path></svg>
+    </span>
+    <span class="label">Writing</span>
+  </a>
+
+  <a class="dock-app" href={`${base}/rss.xml`}>
+    <span class="icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><circle cx="6.5" cy="17.5" r="1.7"></circle><path d="M5 11a8.5 8.5 0 0 1 8.5 8.5"></path><path d="M5 5.5A14 14 0 0 1 19 19.5"></path></svg>
+    </span>
+    <span class="label">RSS</span>
+  </a>
+
+  <a class="dock-app" href="mailto:john@jcrenshaw.dev">
+    <span class="icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="12" rx="2.2"></rect><path d="M4.2 7.5l7.8 5.6 7.8-5.6"></path></svg>
+    </span>
+    <span class="label">Contact</span>
+  </a>
+</nav>
