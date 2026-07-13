@@ -66,8 +66,8 @@ Deferred. Tracked, not in the current roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SSR-01 | Phase 1 | Pending |
-| SSR-02 | Phase 1 | Pending |
+| SSR-01 | Phase 1 | Complete |
+| SSR-02 | Phase 1 | Complete |
 | GHST-01 | Phase 2 | Pending |
 | GHST-02 | Phase 2 | Pending |
 | GHST-03 | Phase 2 | Pending |
