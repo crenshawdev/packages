@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getLatestCode } from '../lib/latestCode';
 
-// Tempest's version comes from the GitLab API at build time; the rest are sourced from each repo's Cargo.toml.
+// Tempest's version comes from the GitHub API at build time; the rest are sourced from each repo's Cargo.toml.
 const tempest = await getLatestCode();
 const tempestReleased = tempest.released
   ? ` · ${new Intl.DateTimeFormat('en-US', { month: 'short', year: 'numeric' }).format(new Date(tempest.released))}`
@@ -26,7 +26,7 @@ const projects = [
     name: 'powercurve',
     meta: 'Rust · v0.4.0',
     desc: 'A Linux power-management daemon with built-in fan curves, compatible with power-profiles-daemon so existing desktop tooling keeps working. On the AUR and as a Debian package.',
-    href: 'https://gitlab.com/vintagetechie/powercurve',
+    href: 'https://github.com/crenshawdev/powercurve',
     live: true,
   },
 ];
@@ -34,7 +34,7 @@ const projects = [
 
 <BaseLayout
   title="Code"
-  description="Rust tools for the Linux desktop by John Crenshaw (VintageTechie)."
+  description="Rust tools for the Linux desktop by John Crenshaw."
   windowTitle="Code"
   active="code"
 >
@@ -59,6 +59,6 @@ const projects = [
   </div>
 
   <p style="margin-top:28px;font-family:var(--mono);font-size:12px;color:var(--ink-4)">
-    All repositories live at <a href="https://gitlab.com/vintagetechie">gitlab.com/vintagetechie ↗</a>
+    All repositories live at <a href="https://github.com/crenshawdev">github.com/crenshawdev ↗</a>
   </p>
 </BaseLayout>

@@ -27,7 +27,7 @@ const dateFmt = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric
 const latestDate = dateFmt.format(latest.data.published_at);
 const latestHref = `${base}/posts/${latest.data.slug ?? latest.id}`;
 
-// Latest code — Tempest's version comes from the GitLab API at build time (curated fallback if offline).
+// Latest code — Tempest's version comes from the GitHub API at build time (curated fallback if offline).
 const latestCode = await getLatestCode();
 const releaseDate = latestCode.released ? dateFmt.format(new Date(latestCode.released)) : null;
 const code = {
@@ -35,7 +35,7 @@ const code = {
   lang: 'Rust',
   version: latestCode.version,
   blurb: 'A weather applet for COSMIC: forecasts, alerts, and air quality with no account or API key.',
-  href: 'https://gitlab.com/vintagetechie/cosmic-ext-applet-tempest',
+  href: 'https://github.com/crenshawdev/tempest',
 };
 
 const markSrc = `${base}/favicon.svg`;
@@ -43,7 +43,7 @@ const markSrc = `${base}/favicon.svg`;
 
 <BaseLayout
   title="John Crenshaw"
-  description="The front door to John Crenshaw (VintageTechie): retired engineer writing essays and building Rust tools for the Linux desktop."
+  description="The front door to John Crenshaw: retired engineer writing essays and building Rust tools for the Linux desktop."
 >
   <script is:inline slot="head">
     // Pre-paint: only the first visit (and not reduced-motion) gets the boot overlay.
@@ -67,7 +67,7 @@ const markSrc = `${base}/favicon.svg`;
     <div class="bl boot-dim" style="animation-delay:.35s">[    0.661320] systemd 257 running in system mode</div>
     <div class="bl" style="animation-delay:.41s"><span class="boot-ok">[  OK  ]</span> Reached target Local File Systems</div>
     <div class="bl" style="animation-delay:.47s"><span class="boot-ok">[  OK  ]</span> Mounted /home/john</div>
-    <div class="bl" style="animation-delay:.53s"><span class="boot-ok">[  OK  ]</span> Started Network <span class="boot-dim">— gitlab.com/vintagetechie</span></div>
+    <div class="bl" style="animation-delay:.53s"><span class="boot-ok">[  OK  ]</span> Started Network <span class="boot-dim">— github.com/crenshawdev</span></div>
     <div class="bl" style="animation-delay:.59s"><span class="boot-ok">[  OK  ]</span> Loaded fonts <span class="boot-dim">— IBM Plex Mono / Sans</span></div>
     <div class="bl" style="animation-delay:.65s"><span class="boot-ok">[  OK  ]</span> Applied theme <span class="boot-dim">— Deep Slate</span></div>
     <div class="bl" style="animation-delay:.71s"><span class="boot-ok">[  OK  ]</span> Started about.service</div>
@@ -150,14 +150,14 @@ const markSrc = `${base}/favicon.svg`;
           </div>
           {releaseDate && <p class="essay-meta">Latest release · {releaseDate}</p>}
           <p class="essay-excerpt">{code.blurb}</p>
-          <a class="card-link" href={code.href}>Get it on GitLab ↗</a>
+          <a class="card-link" href={code.href}>Get it on GitHub ↗</a>
         </article>
       </div>
     </section>
 
     <!-- Close -->
     <section class="close">
-      <a class="ghost" href={code.href}>Browse the code on GitLab ↗</a>
+      <a class="ghost" href={code.href}>Browse the code on GitHub ↗</a>
     </section>
   </main>
 
