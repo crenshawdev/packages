@@ -1,9 +1,8 @@
 ---
-import { getEntry, render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { renderBody } from '../lib/content';
 
-const about = await getEntry('posts', 'about');
-const { Content } = await render(about);
+const { Content } = await renderBody('about');
 ---
 
 <BaseLayout
