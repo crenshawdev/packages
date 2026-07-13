@@ -1,4 +1,4 @@
-# vintagetechie-dev.gitlab.io — project notes
+# jcrenshaw.dev — project notes
 
 Astro 6 static site for jcrenshaw.dev (blog + project pages), deployed to GitLab Pages.
 

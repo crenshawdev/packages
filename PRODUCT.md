@@ -8,13 +8,13 @@ brand
 
 Readers of John Crenshaw's essays; the FOSS / Linux / COSMIC-desktop community; fellow
 developers and tinkerers who follow his Rust projects. They arrive from a blog link, Mastodon,
-a GitLab repo, or an aggregator, on desktop or phone, usually to size up his thinking or track
+a GitHub repo, or an aggregator, on desktop or phone, usually to size up his thinking or track
 what he's building. A second, not-yet-optimized-for audience: people who might later want to
 hire him or support the work (kept open, not designed-for yet).
 
 ## Product Purpose
 
-A personal "front door" for John Crenshaw (VintageTechie): a desktop-OS-styled hub that
+A personal "front door" for John Crenshaw: a desktop-OS-styled hub that
 presents who he is, surfaces his latest essay and latest code, and routes visitors out to the
 writing and the repositories. It is identity plus distribution for his essays and FOSS work.
 Success: a visitor immediately understands who he is and what he makes, gets into an essay or a
@@ -53,7 +53,7 @@ they're doing and means it." Three words: principled, precise, restrained.
    reduced-motion, keyboard access.
 5. **Principled and honest — practice what he preaches.** No trackers, no surveillance, no
    third-party slop on the front door; privacy respected (decoy location); self-reliant
-   (self-hosted distribution, GitLab). The site embodies the values the essays argue for.
+   (self-hosted distribution, GitHub). The site embodies the values the essays argue for.
 
 ## Accessibility & Inclusion
 
