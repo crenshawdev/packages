@@ -58,13 +58,13 @@ Explicit exclusions. The reason prevents scope creep later.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| IDENT-01 | Phase 1 | Pending |
-| IDENT-02 | Phase 1 | Pending |
+| IDENT-01 | Phase 1 | Complete |
+| IDENT-02 | Phase 1 | Complete |
 | IDENT-03 | Phase 2 | Pending |
-| IDENT-04 | Phase 1 | Pending |
-| LINK-01 | Phase 1 | Pending |
-| LINK-02 | Phase 1 | Pending |
-| SITE-01 | Phase 1 | Pending |
+| IDENT-04 | Phase 1 | Complete |
+| LINK-01 | Phase 1 | Complete |
+| LINK-02 | Phase 1 | Complete |
+| SITE-01 | Phase 1 | Complete |
 | BLD-01 | Phase 2 | Pending |
 | BLD-02 | Phase 2 | Pending |
 | DPLY-01 | Phase 3 | Pending |
