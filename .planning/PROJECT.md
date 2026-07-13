@@ -1,80 +1,81 @@
-# jcrenshaw.dev — personal front-door site
+# jcrenshaw.dev — self-hosted, self-updating front door
 
 ## What This Is
 
 The public front door for **John Crenshaw** (handle `crenshawdev`, brand mark "JC"):
-a desktop-OS-styled Astro site that presents who he is, surfaces his latest essay and
-latest code release, and routes visitors out to the writing and the repositories. This
-project is the **rebrand and go-live** of the existing Astro site — retiring the
-`vintagetechie` persona, moving the source from GitLab to a private GitHub repo, and
-deploying the site live at `jcrenshaw.dev` behind Cloudflare. The design is kept and
-evolved, not rebuilt.
+a desktop-OS-styled site that presents who he is, surfaces his latest essay and latest
+code release, and routes visitors out to the writing and the repositories. This is a
+**re-scope**: the site moves from a hand-pushed static Astro build to a **self-hosted,
+event-driven platform** — Ghost as the content source of truth, an Astro SSR front end,
+and a pipeline that updates the live site with zero manual steps. The existing design is
+kept and evolved, not rebuilt.
 
 ## Core Value
 
-The site is live at `jcrenshaw.dev` presenting John Crenshaw's identity consistently —
-zero `vintagetechie`/GitLab leakage on the public surface — and gets readers into an
-essay or a project.
+jcrenshaw.dev is a living front door: John publishes in Ghost or cuts a project release,
+and the public site updates itself with no human touch. The identity reads "John Crenshaw"
+consistently, and every visit lands a reader in an essay or a project.
 
 ## Requirements
 
 ### Validated
 
-Existing capabilities of the imported Astro site (brownfield — shipped under the old
-brand, carried forward):
+Carried groundwork — already committed on `rebrand-to-jcrenshaw` and surviving the re-scope
+(identity and content are the same; only the data source and delivery change):
 
-- ✓ Desktop/boot-metaphor home with Dock navigation, no-JS fallback, reduced-motion support
-- ✓ Writing room: essay index + `posts/[slug]` rendering from 19 markdown posts
-- ✓ Code room: project list with live latest-release version (Tempest, Weathervane) via `latestCode.ts`
-- ✓ About page, RSS feed (`rss.xml`), per-project pages, OG link-preview cards
-- ✓ WCAG 2.1 AA target, keyboard-navigable chrome, mobile full-screen-sheet layout
+- ✓ Identity rebrand: all current-identity copy/bylines/metadata read John Crenshaw / `crenshawdev` / `jcrenshaw.dev`, no `vintagetechie` leakage on rendered pages
+- ✓ Code links repointed to `github.com/crenshawdev/...`; `latestCode.ts` reads the Tempest release from GitHub
+- ✓ Subscribe UI removed for launch
+- ✓ OG cards regenerated to the JC identity
+- ✓ Desktop/boot-metaphor home (Dock/Panel/BaseLayout), writing + code rooms, about, RSS, WCAG 2.1 AA target, reduced-motion + no-JS fallback
 
 ### Active
 
 Hypotheses until shipped and confirmed live:
 
-- [ ] All public copy, bylines, and metadata read "John Crenshaw" / `crenshawdev` / `jcrenshaw.dev`; no `vintagetechie` string on any rendered page
-- [ ] `latestCode.ts` reads the latest Tempest release from the GitHub API (`crenshawdev/tempest`), verified resolving before cutover
-- [ ] Project/code links point to the new GitHub locations; GitLab links updated or removed
-- [ ] Subscribe UI removed from the site for launch (newsletter parked)
-- [ ] Site builds clean and deploys to the DO droplet via Coolify behind Cloudflare Pro
-- [ ] Live and reachable at `jcrenshaw.dev` over HTTPS, validated on a staging subdomain first
+- [ ] Astro runs in **server output** with a Node adapter; the existing pages and design render unchanged under the adapter
+- [ ] The render layer reads content through a **data abstraction**, decoupled from source (markdown glob now, Ghost Content API after cutover)
+- [ ] **Self-hosted Ghost + MySQL** stands up on the DO droplet under Coolify, seeded from the 19 local markdown posts, with the one dead `death-by-yes` feature image re-sourced
+- [ ] Ghost-native newsletter is configured with **Mailgun** as the delivery provider
+- [ ] The front end reads posts and pages from the **Ghost Content API** with full render parity (index, writing, `posts/[slug]`, about, RSS, OG)
+- [ ] **Event-driven pipeline**: a Ghost publish webhook triggers an automatic rebuild+redeploy; a project release triggers the matching code page to update; OG cards regenerate inside the pipeline
+- [ ] Site validated on a **staging subdomain** over real HTTPS, then **live at `jcrenshaw.dev`** behind Cloudflare Pro, served by the automated pipeline end to end
 
 ### Out of Scope
 
-- Newsletter / subscribe wiring — parked this session; will use a managed service (Buttondown/EmailOctopus) later, not self-hosted on the site.
-- Public download counters / stats — belongs to a separate future project (R2 + Worker + Analytics Engine); the public site shows no counters.
-- Private Rust stats dashboard — separate private project, John-only, not this repo.
-- Build-host migration (GitLab CI → minas-tirith LXC) — orthogonal, later.
-- Rewriting the design — the existing Astro design is kept and evolved, not replaced.
+- **Paid members / Stripe** — design-for-don't-build this cycle. SSR keeps it a later switch-flip via Ghost Portal / Members API; confirm mechanics against Ghost docs when it comes off the table.
+- **Download counters / stats** — separate future project (Cloudflare R2 + Worker + Analytics Engine → private Rust dashboard). The public site shows no counters.
+- **listmonk / Resend** — retired and decommissioned; all email consolidates into Ghost + Mailgun.
+- **Redesign** — the existing Astro design is kept and evolved, not replaced.
+- **Mastodon move** (`@crenshawdev@tech.lgbt`) — separate, not this repo.
 
 ## Context
 
-- **Repo:** `/data/projects/jcrenshaw.dev`, fresh git history (old GitLab history dropped; archive at `/data/code/vintagetechie-dev.gitlab.io`). Branch `rebrand-to-jcrenshaw`. Baseline commit imported the Astro site (60 files). Private GitHub `origin` = `git@github.com:crenshawdev/jcrenshaw.dev.git`, **not pushed**. Repo stays **private permanently** — only the deployed site is public.
-- **Stack:** Astro `^6.2.2`, static build to `dist/`. Posts are markdown in `./posts` (root), glob-loaded via `src/content.config.ts`; frontmatter is Ghost-export-shaped (`published_at` required). Pages in `src/pages/`; chrome in `BaseLayout.astro` + `Dock`/`Panel`/`Subscribe` components; global CSS in `src/styles/global.css`. OG cards in `og/*.html` → `public/*.png` at 1200×630.
-- **Rebrand surface (measured):** `vintagetechie`/`gitlab` strings appear in `src/lib/latestCode.ts`, `src/pages/{index,code}.astro`, `src/pages/code/{tempest,weathervane}.astro`, `PRODUCT.md`, `public/og-image.svg`, and 4 posts (`why-i-left-github`, `why-i-started-writing-rust-in-retirement`, `still-skidding-broadside`, `i-built-my-own-door`, `page-about`). Historical prose in essays is left factual where it refers to the past; only current-identity references are updated.
-- **Tempest move:** John imports Tempest to `github.com/crenshawdev/tempest` (GitHub import, keeps history, renamed from `cosmic-ext-applet-tempest`) **before** go-live, which is why the version fetch repoints to GitHub.
-- **Hosting:** DO droplet `167.99.0.56` (private `10.116.0.2`), Coolify 1-click, behind Cloudflare Pro (edge cache carries availability; single origin may blink). Coolify admin registration at `http://167.99.0.56:8000` is a pending human step John owns.
+- **Repo:** `/data/projects/jcrenshaw.dev`, branch `rebrand-to-jcrenshaw`. Private GitHub `origin = git@github.com:crenshawdev/jcrenshaw.dev.git`, **not pushed**. Repo stays private permanently; only the deployed site is public.
+- **Front end:** Astro `^6.2.2`. Currently `output: static`; the re-scope moves it to server output + Node adapter. Design in `BaseLayout.astro` + `Dock`/`Panel`; global CSS in `src/styles/global.css`. Pages in `src/pages/`. OG cards in `og/*.html` → `public/*.png` at 1200×630.
+- **Content today:** 19 markdown posts in `./posts` (root), glob-loaded via `src/content.config.ts`, Ghost-export-shaped frontmatter (`published_at` required). The markdown still carries `__GHOST_URL__` markers — it IS the Ghost export in markdown form, which is what seeds the fresh Ghost.
+- **Ghost:** fresh stand-up. John used Ghost(Pro) before, cancelled months ago; no members, no Stripe, no export JSON kept. Seed once from the local markdown.
+- **Infra:** DO droplet `167.99.0.56` (private `10.116.0.2`), NYC1, 2vCPU / 4GB / 80GB, $24/mo, Coolify, behind Cloudflare Pro. 4GB is tight for Ghost + MySQL + Coolify + SSR — expand if needed. **Coolify admin is registered** (the pending human step is done). `minas-tirith` is the private build/test box, never the public front door.
 
 ## Constraints
 
-- **Tech stack**: Astro 6 static site → `dist/` — keep the existing design, evolve don't rebuild.
-- **Routing**: `trailingSlash: 'never'` with `build.format: 'directory'` — internal links must stay extensionless and trailing-slash-free.
-- **CI**: `.gitlab-ci.yml` runs only on the default branch (`npm ci && npm run build`, then `mv dist public`); it does NOT run `render-og.mjs`, so regenerated OG PNGs must be committed in `public/`.
-- **Branch/push**: never work on `main`; currently on `rebrand-to-jcrenshaw`. Never push unless John asks.
-- **Deploy order**: build → verify on a staging subdomain (e.g. `staging.jcrenshaw.dev`) with real Coolify/Let's-Encrypt HTTPS → only then point apex `jcrenshaw.dev` (Coolify auto-HTTPS needs DNS resolving first).
-- **Voice**: no em-dashes, don't open sentences with "So", no AI commit attribution.
+- **Automation is non-negotiable.** Every derived artifact regenerates inside a pipeline with no human touch. Never ship a manual step as the steady-state answer (the phase-2 hand-rendered OG cards were exactly the anti-pattern being retired).
+- **Design preserved.** Keep Dock/Panel/BaseLayout; SSR removes the `output: static` constraint that made Astro feel constrictive, without a framework switch.
+- **Routing:** `trailingSlash: 'never'` — internal links stay extensionless and trailing-slash-free.
+- **Deploy order:** build → validate on a staging subdomain over real HTTPS → only then cut the apex over (Coolify auto-HTTPS needs DNS resolving first).
+- **Branch/push:** never work on `main`; on `rebrand-to-jcrenshaw`. Never push unless John asks.
+- **Voice:** no em-dashes, don't open sentences with "So", no AI commit attribution.
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Scope = site only (rebrand + deploy) | Stats pipeline and Rust dashboard are separate projects; keeps this focused and shippable | ✓ good |
-| Keep & evolve the Astro design | Strong existing design and PRODUCT.md; rebrand is identity, not redesign | ✓ good |
-| Repoint `latestCode.ts` to GitHub `crenshawdev/tempest` | Tempest imported to GitHub before launch; single source of truth under new identity | - pending |
-| Remove Subscribe UI for launch | Newsletter parked; managed service wired later, don't ship a dead form | ✓ good |
-| Deploy via Coolify on DO behind Cloudflare Pro | Owned origin + edge cache for the nines; off-the-shelf deploy, no hand-tooling | - pending |
-| Private source repo, public deployed site only | Repo is just the build source Coolify pulls | ✓ good |
+| Re-scope static → self-hosted event-driven platform | John wants a self-updating front door, not a hand-pushed static site; automation is foundational | - pending |
+| Ghost self-hosted = content source of truth | Loved Ghost(Pro), owns the infra now, markdown already is the Ghost export | - pending |
+| Astro SSR (server output + Node adapter), keep design | Removes the `output: static` constraint without a framework rebuild | - pending |
+| Data abstraction between render and source | Lets SSR conversion land before Ghost exists, and swaps markdown → Ghost cleanly | - pending |
+| Email via Ghost newsletter + Mailgun; retire listmonk | Consolidate audience/email into the owned platform, drop the tunnel/relay stack | - pending |
+| Paid members tabled, design-for-don't-build | SSR keeps it a later switch-flip; no value shipping it now | ✓ good |
 
 ---
-*Last updated: 2026-07-13 after project initialization*
+*Last updated: 2026-07-13 after re-scope to self-hosted Ghost + Astro SSR*

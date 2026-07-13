@@ -1,77 +1,88 @@
-# Requirements: jcrenshaw.dev — personal front-door site
+# Requirements: jcrenshaw.dev — self-hosted, self-updating front door
 
-**Defined:** 2026-07-13
-**Core Value:** The site is live at `jcrenshaw.dev` presenting John Crenshaw's identity consistently — zero `vintagetechie`/GitLab leakage on the public surface — and gets readers into an essay or a project.
+**Defined:** 2026-07-13 (re-scope)
+**Core Value:** jcrenshaw.dev updates itself — John publishes in Ghost or cuts a release, and the live public site reflects it with zero manual steps, identity reading John Crenshaw throughout.
+
+## Carried Groundwork
+
+Already committed on `rebrand-to-jcrenshaw` and surviving the re-scope. Not re-numbered as phases; listed for traceability.
+
+- Identity rebrand (strings, bylines, metadata) → John Crenshaw / `crenshawdev` / `jcrenshaw.dev`
+- Code links repointed to GitHub; `latestCode.ts` reads Tempest release from GitHub
+- Subscribe UI removed
+- OG cards regenerated to JC identity
 
 ## v1 Requirements
 
 Committed scope. Each maps to exactly one roadmap phase.
 
-### Identity
+### SSR Foundation
 
-- [ ] **IDENT-01**: No `vintagetechie` string appears in the current-identity surface of any rendered page — site title, bylines, author metadata, nav, footer, alt text. (Historical essay prose that factually refers to the past persona is left as written.)
-- [ ] **IDENT-02**: Author/byline and page metadata read "John Crenshaw" site-wide (titles, `<meta>`, RSS author, canonical host `jcrenshaw.dev`).
-- [ ] **IDENT-03**: OG/social assets (`public/og-image.svg` and the OG cards) present the JC / jcrenshaw.dev identity, no vintagetechie mark.
-- [ ] **IDENT-04**: `PRODUCT.md` and other in-repo identity references updated to John Crenshaw / jcrenshaw.dev.
+- [ ] **SSR-01**: Astro builds and runs in **server output** with a Node adapter; the existing pages and design render unchanged under the adapter.
+- [ ] **SSR-02**: The render layer reads content through a **data-source abstraction** decoupled from origin, backed by the markdown glob at this phase so nothing visual changes.
 
-### Links & Data
+### Ghost Platform
 
-- [ ] **LINK-01**: `latestCode.ts` fetches the latest Tempest release from the GitHub API (`crenshawdev/tempest`) and renders a live version; the repo is verified resolving before cutover so the page does not silently fall back.
-- [ ] **LINK-02**: All code/project links and repo references point to the new GitHub locations; stale GitLab links are updated or removed.
+- [ ] **GHST-01**: Self-hosted **Ghost + MySQL** stands up on the DO droplet under Coolify; admin is reachable and usable.
+- [ ] **GHST-02**: The **19 local markdown posts** are seeded into Ghost with title/slug/body/`published_at` parity; the dead `death-by-yes` `__GHOST_URL__` feature image is re-sourced.
+- [ ] **GHST-03**: A **Ghost Content API** key is issued and the API is reachable from the front end.
+- [ ] **GHST-04**: Ghost-native **newsletter** is configured with **Mailgun** as the delivery provider.
 
-### Site
+### Content Cutover
 
-- [ ] **SITE-01**: The Subscribe component is removed from every page for launch, with no dead form or inert affordance left behind.
+- [ ] **CUT-01**: The front end reads posts and pages from the **Ghost Content API** through the SSR data abstraction, replacing the markdown glob.
+- [ ] **CUT-02**: **Render parity** — index latest-essay, writing index, `posts/[slug]`, about, and RSS are produced from Ghost data with no visual or content regression against the markdown build.
+- [ ] **CUT-03**: **OG card data** is sourced from Ghost content (title/excerpt/identity), not hand-authored per post.
 
-### Build & Assets
+### Automation Pipeline
 
-- [ ] **BLD-01**: OG preview cards regenerated to reflect the new identity and committed as PNGs in `public/`.
-- [ ] **BLD-02**: `npm run build` completes clean; internal links stay extensionless and trailing-slash-free; no `vintagetechie` string in the built `dist/` public surface.
+- [ ] **AUTO-01**: A **Ghost publish/update webhook** triggers an automatic site rebuild + redeploy with no manual step.
+- [ ] **AUTO-02**: A **project release** (tag/build in its repo) triggers the matching code page to update automatically.
+- [ ] **AUTO-03**: **OG cards regenerate inside the pipeline** on content change, never hand-rendered.
+- [ ] **AUTO-04**: **Coolify deploys** the SSR site from the private GitHub repo; the whole publish → live path is zero-touch.
 
-### Deploy
+### Deploy & Go Live
 
-- [ ] **DPLY-01**: The site deploys to the DO droplet via Coolify from the private GitHub repo.
-- [ ] **DPLY-02**: The site is validated on a staging subdomain over real Coolify/Let's-Encrypt HTTPS before any apex cutover.
-- [ ] **DPLY-03**: The site is live and reachable at `jcrenshaw.dev` over HTTPS behind Cloudflare Pro.
+- [ ] **DPLY-01**: The SSR site is validated on a **staging subdomain** over real Coolify/Let's-Encrypt HTTPS, reading live Ghost, before any apex cutover.
+- [ ] **DPLY-02**: **`jcrenshaw.dev` is live** over HTTPS behind Cloudflare Pro, served by the automated pipeline end to end.
 
 ## v2 Requirements
 
 Deferred. Tracked, not in the current roadmap.
 
-### Newsletter
-
-- **NEWS-01**: Subscribe signup wired to a managed newsletter service (Buttondown/EmailOctopus).
+- **MEMB-01**: Paid members via Ghost Portal / Members API + Stripe. SSR keeps this a later switch-flip; confirm mechanics against Ghost docs first.
 
 ## Out of Scope
 
-Explicit exclusions. The reason prevents scope creep later.
-
 | Feature | Reason |
 |---------|--------|
-| Self-hosted newsletter on the site | Parked; deliverability belongs to a managed service, laptop stays the fortress |
-| Public download counters | Separate future project (R2 + Worker + Analytics Engine); public site shows no counters |
-| Private Rust stats dashboard | Separate private, John-only project, not this repo |
-| Build-host migration (GitLab CI → minas-tirith) | Orthogonal to the site rebrand; later |
-| Redesign of the site | Design is kept and evolved, not rebuilt |
+| Paid members / Stripe (now) | Design-for-don't-build; no value shipping it this cycle |
+| Download counters / stats | Separate future project (R2 + Worker + Analytics Engine → private Rust dashboard) |
+| listmonk / Resend | Retired; email consolidates into Ghost + Mailgun |
+| Redesign | Design kept and evolved, not rebuilt |
+| Mastodon move | Separate, not this repo |
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| IDENT-01 | Phase 1 | Complete |
-| IDENT-02 | Phase 1 | Complete |
-| IDENT-03 | Phase 2 | Complete |
-| IDENT-04 | Phase 1 | Complete |
-| LINK-01 | Phase 1 | Complete |
-| LINK-02 | Phase 1 | Complete |
-| SITE-01 | Phase 1 | Complete |
-| BLD-01 | Phase 2 | Complete |
-| BLD-02 | Phase 2 | Complete |
-| DPLY-01 | Phase 3 | Pending |
-| DPLY-02 | Phase 3 | Pending |
-| DPLY-03 | Phase 3 | Pending |
+| SSR-01 | Phase 1 | Pending |
+| SSR-02 | Phase 1 | Pending |
+| GHST-01 | Phase 2 | Pending |
+| GHST-02 | Phase 2 | Pending |
+| GHST-03 | Phase 2 | Pending |
+| GHST-04 | Phase 2 | Pending |
+| CUT-01 | Phase 3 | Pending |
+| CUT-02 | Phase 3 | Pending |
+| CUT-03 | Phase 3 | Pending |
+| AUTO-01 | Phase 4 | Pending |
+| AUTO-02 | Phase 4 | Pending |
+| AUTO-03 | Phase 4 | Pending |
+| AUTO-04 | Phase 4 | Pending |
+| DPLY-01 | Phase 4 | Pending |
+| DPLY-02 | Phase 5 | Pending |
 
-**Coverage:** 12 v1 requirements, 12 mapped, 0 unmapped
+**Coverage:** 15 v1 requirements, 15 mapped, 0 unmapped
 
 ---
-*Last updated: 2026-07-13 after project initialization*
+*Last updated: 2026-07-13 after re-scope to self-hosted Ghost + Astro SSR*
