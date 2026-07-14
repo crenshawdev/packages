@@ -23,6 +23,14 @@ const minutes = Math.max(1, Math.round(words / 220));
 const wordsFmt = new Intl.NumberFormat('en-US').format(words);
 const tag = post.tags[0] ?? 'note';
 const num = String(index).padStart(2, '0');
+
+// Per-post social card: use the Ghost feature image (an absolute
+// https://ghost.jcrenshaw.dev/... URL) when present; otherwise leave undefined
+// so BaseLayout falls back to the site-wide /og-image.png.
+const ogImage =
+  typeof post.featureImage === 'string' && post.featureImage.length > 0
+    ? post.featureImage
+    : undefined;
 ---
 
 <BaseLayout
@@ -31,6 +39,7 @@ const num = String(index).padStart(2, '0');
   windowTitle={post.title}
   windowSeg="writing"
   active="writing"
+  ogImage={ogImage}
 >
   <article class="post">
     <header>
