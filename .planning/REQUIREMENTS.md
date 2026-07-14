@@ -68,10 +68,10 @@ Deferred. Tracked, not in the current roadmap.
 |-------------|-------|--------|
 | SSR-01 | Phase 1 | Complete |
 | SSR-02 | Phase 1 | Complete |
-| GHST-01 | Phase 2 | Pending |
-| GHST-02 | Phase 2 | Pending |
-| GHST-03 | Phase 2 | Pending |
-| GHST-04 | Phase 2 | Pending |
+| GHST-01 | Phase 2 | Complete |
+| GHST-02 | Phase 2 | Complete |
+| GHST-03 | Phase 2 | Complete |
+| GHST-04 | Phase 2 | Complete |
 | CUT-01 | Phase 3 | Pending |
 | CUT-02 | Phase 3 | Pending |
 | CUT-03 | Phase 3 | Pending |
