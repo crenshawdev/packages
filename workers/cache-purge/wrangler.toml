@@ -8,4 +8,4 @@ compatibility_date = "2026-01-01"
 [vars]
 # The jcrenshaw.dev zone id (Cloudflare dashboard -> the zone -> Overview,
 # right sidebar). Not a secret, safe to commit.
-CF_ZONE_ID = "PUT_ZONE_ID_HERE"
+CF_ZONE_ID = "2d789a860ef460686f494e43cd6b5164"
