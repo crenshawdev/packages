@@ -7,11 +7,16 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "seed": "node --env-file=.env scripts/seed-ghost.mjs"
   },
   "dependencies": {
     "@astrojs/node": "^10.1.4",
     "@astrojs/rss": "^4.0.19",
     "astro": "^6.2.2"
+  },
+  "devDependencies": {
+    "@tryghost/admin-api": "^1.13.12",
+    "gray-matter": "^4.0.3"
   }
 }
