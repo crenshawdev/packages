@@ -1,4 +1,6 @@
 # Multi-stage build for the Astro SSR site (node-standalone server).
+# Deployed by Coolify, which rebuilds this image on every push to main
+# (GitHub webhook -> Coolify auto-deploy).
 # The build runs the OG prebuild render, which needs a chromium binary and its
 # system libs, so the builder is a full bookworm-slim base with Playwright's
 # --with-deps. The runtime never launches chromium, so it ships without one.
