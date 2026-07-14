@@ -1,9 +1,13 @@
-// Fetches the flagship project's latest release at build time from the GitHub API.
-// Public repo, no auth. Falls back to a curated value so the build never breaks
-// (e.g. offline or API hiccup). Memoized: one request per build even if both the
-// entry and the code room import it.
+// Fetches the flagship project's latest release from the GitHub API.
+// Public repo, no auth. Falls back to a curated value so a render never breaks
+// (e.g. offline or API hiccup). Under SSR this process is long-lived, so the
+// result is cached with a TTL and re-fetched once it expires, rather than
+// memoized forever, keeping the shown version fresh without a redeploy.
 
 const TAGS_URL = 'https://api.github.com/repos/crenshawdev/tempest/tags?per_page=1';
+
+// Re-fetch at most once per TTL window under the long-lived SSR server.
+const TTL_MS = 600000; // 10 minutes
 
 export interface LatestCode {
   version: string;
@@ -19,6 +23,7 @@ const HEADERS = {
 };
 
 let cache: Promise<LatestCode> | null = null;
+let cachedAt = 0;
 
 async function fetchLatest(): Promise<LatestCode> {
   try {
@@ -57,6 +62,9 @@ async function fetchLatest(): Promise<LatestCode> {
 }
 
 export function getLatestCode(): Promise<LatestCode> {
-  if (!cache) cache = fetchLatest();
+  if (!cache || Date.now() - cachedAt > TTL_MS) {
+    cachedAt = Date.now();
+    cache = fetchLatest();
+  }
   return cache;
 }
