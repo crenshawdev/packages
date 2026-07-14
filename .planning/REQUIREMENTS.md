@@ -30,9 +30,9 @@ Committed scope. Each maps to exactly one roadmap phase.
 
 ### Content Cutover
 
-- [ ] **CUT-01**: The front end reads posts and pages from the **Ghost Content API** through the SSR data abstraction, replacing the markdown glob.
-- [ ] **CUT-02**: **Render parity** — index latest-essay, writing index, `posts/[slug]`, about, and RSS are produced from Ghost data with no visual or content regression against the markdown build.
-- [ ] **CUT-03**: **OG card data** is sourced from Ghost content (title/excerpt/identity), not hand-authored per post.
+- [x] **CUT-01**: The front end reads posts and pages from the **Ghost Content API** through the SSR data abstraction, replacing the markdown glob.
+- [x] **CUT-02**: **Render parity** — index latest-essay, writing index, `posts/[slug]`, about, and RSS are produced from Ghost data with no visual or content regression against the markdown build.
+- [x] **CUT-03**: **OG card data** is sourced from Ghost content (title/excerpt/identity), not hand-authored per post.
 
 ### Automation Pipeline
 
@@ -72,9 +72,9 @@ Deferred. Tracked, not in the current roadmap.
 | GHST-02 | Phase 2 | Complete |
 | GHST-03 | Phase 2 | Complete |
 | GHST-04 | Phase 2 | Complete |
-| CUT-01 | Phase 3 | Pending |
-| CUT-02 | Phase 3 | Pending |
-| CUT-03 | Phase 3 | Pending |
+| CUT-01 | Phase 3 | Complete |
+| CUT-02 | Phase 3 | Complete |
+| CUT-03 | Phase 3 | Complete |
 | AUTO-01 | Phase 4 | Pending |
 | AUTO-02 | Phase 4 | Pending |
 | AUTO-03 | Phase 4 | Pending |
