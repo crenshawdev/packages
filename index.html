@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>jcrenshaw.dev APT &amp; RPM repos</title>
+<style>
+  :root {
+    --bg: #fbfbfa; --fg: #1a1a1a; --muted: #5c5c5c; --line: #e4e4e0;
+    --code-bg: #f2f2ef; --accent: #b5451a; --card: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161615; --fg: #ececea; --muted: #9a9a95; --line: #2c2c2a;
+      --code-bg: #1f1f1e; --accent: #e8734a; --card: #1b1b1a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { max-width: 720px; margin: 0 auto; padding: 4rem 1.25rem 5rem; }
+  header { margin-bottom: 2.5rem; }
+  h1 { font-size: 1.9rem; line-height: 1.2; margin: 0 0 .6rem; letter-spacing: -.01em; }
+  h1 .dot { color: var(--accent); }
+  .lede { color: var(--muted); font-size: 1.08rem; margin: 0; max-width: 40ch; }
+  h2 {
+    font-size: .82rem; text-transform: uppercase; letter-spacing: .08em;
+    color: var(--muted); margin: 2.5rem 0 .9rem; font-weight: 600;
+  }
+  h3 { font-size: 1rem; margin: 1.4rem 0 .5rem; font-weight: 600; }
+  p { margin: .6rem 0; }
+  .code {
+    position: relative; background: var(--code-bg); border: 1px solid var(--line);
+    border-radius: 10px; margin: .5rem 0;
+  }
+  pre {
+    margin: 0; padding: .95rem 1.05rem; overflow-x: auto;
+    font: .86rem/1.55 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  }
+  .copy {
+    position: absolute; top: .5rem; right: .5rem; border: 1px solid var(--line);
+    background: var(--card); color: var(--muted); border-radius: 7px;
+    font: 600 .72rem/1 system-ui, sans-serif; padding: .4rem .55rem; cursor: pointer;
+  }
+  .copy:hover { color: var(--fg); border-color: var(--muted); }
+  .copy.done { color: var(--accent); border-color: var(--accent); }
+  code.inline {
+    background: var(--code-bg); border: 1px solid var(--line); border-radius: 5px;
+    padding: .08em .38em; font: .85em ui-monospace, Menlo, Consolas, monospace;
+  }
+  ul { padding-left: 1.15rem; margin: .5rem 0; }
+  li { margin: .25rem 0; }
+  footer {
+    margin-top: 3.5rem; padding-top: 1.4rem; border-top: 1px solid var(--line);
+    color: var(--muted); font-size: .87rem;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>jcrenshaw<span class="dot">.</span>dev APT &amp; RPM repos</h1>
+    <p class="lede">Install jcrenshaw.dev apps as <code class="inline">.deb</code> or
+      <code class="inline">.rpm</code> packages and get updates through
+      <code class="inline">apt</code> or <code class="inline">dnf</code>. Add the repo
+      once — everything else works like any other package on your system.</p>
+  </header>
+
+  <h2>Add the repo</h2>
+
+  <h3>Debian / Ubuntu</h3>
+  <div class="code">
+    <button class="copy" type="button">Copy</button>
+<pre>curl -fsSL https://pkg.jcrenshaw.dev/jcrenshaw.asc \
+  | sudo gpg --dearmor -o /usr/share/keyrings/jcrenshaw.gpg
+echo "deb [signed-by=/usr/share/keyrings/jcrenshaw.gpg] https://pkg.jcrenshaw.dev/deb stable main" \
+  | sudo tee /etc/apt/sources.list.d/jcrenshaw.list
+sudo apt update</pre>
+  </div>
+
+  <h3>Fedora</h3>
+  <div class="code">
+    <button class="copy" type="button">Copy</button>
+<pre>sudo curl -fsSL -o /etc/yum.repos.d/jcrenshaw.repo \
+  https://pkg.jcrenshaw.dev/rpm/jcrenshaw.repo</pre>
+  </div>
+
+  <p>The repos are GPG-signed; your package manager verifies every download for you.</p>
+
+  <h2>Install an app</h2>
+  <div class="code">
+    <button class="copy" type="button">Copy</button>
+<pre>sudo apt install __EXAMPLE_PKG__    # Debian / Ubuntu
+sudo dnf install __EXAMPLE_PKG__    # Fedora</pre>
+  </div>
+  <p>Available packages:</p>
+  <ul>
+__PACKAGE_LIST__
+  </ul>
+  <p>Updates come through your usual <code class="inline">sudo apt upgrade</code> /
+    <code class="inline">sudo dnf upgrade</code>.</p>
+
+  <h2>Remove the repo</h2>
+  <div class="code">
+    <button class="copy" type="button">Copy</button>
+<pre># Debian / Ubuntu
+sudo rm /etc/apt/sources.list.d/jcrenshaw.list /usr/share/keyrings/jcrenshaw.gpg
+
+# Fedora
+sudo rm /etc/yum.repos.d/jcrenshaw.repo</pre>
+  </div>
+
+  <footer>
+    Source and issues on
+    <a href="https://github.com/crenshawdev">GitHub</a>
+  </footer>
+</main>
+
+<script>
+  document.querySelectorAll(".copy").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var text = btn.parentElement.querySelector("pre").innerText;
+      navigator.clipboard.writeText(text).then(function () {
+        btn.textContent = "Copied";
+        btn.classList.add("done");
+        setTimeout(function () { btn.textContent = "Copy"; btn.classList.remove("done"); }, 1600);
+      });
+    });
+  });
+</script>
+</body>
+</html>

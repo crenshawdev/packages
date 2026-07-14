@@ -1,0 +1,12 @@
+# Registry of apps carried by the jcrenshaw.dev APT/RPM repos.
+# One app per line, '#' comments allowed. Fields are ' | ' separated:
+#
+#   <app-id> | <github owner/repo> | <deb filename> | <rpm filename>
+#
+# The .deb/.rpm are pulled from field 2's LATEST GitHub Release root via the flat
+# asset URL https://github.com/<owner/repo>/releases/latest/download/<file>, which
+# the app's own GitHub Actions attaches at the Release root. Add an app by
+# appending a line here once that app has a published GitHub Release.
+com.vintagetechie.CosmicExtAppletTempest | crenshawdev/tempest | cosmic-ext-applet-tempest_amd64.deb | cosmic-ext-applet-tempest.x86_64.rpm
+# dev.jcrenshaw.Placer | crenshawdev/Placer | placer_amd64.deb | placer.x86_64.rpm  (Phase 4/RLL-01 onboards this once Placer ships a GitHub Release — listing it before then would FATAL the aggregate)
+# dev.jcrenshaw.Atmos | crenshawdev/atmos | atmos_amd64.deb | atmos.x86_64.rpm  (Phase 4/RLL-01 onboards this once atmos ships a GitHub Release — listing it before then would FATAL the aggregate)

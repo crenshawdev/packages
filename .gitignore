@@ -1,0 +1,3 @@
+# Build artifacts assembled fresh by aggregate.sh on every build, never committed.
+/public/
+/apt/
