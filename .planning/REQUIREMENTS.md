@@ -36,14 +36,14 @@ Committed scope. Each maps to exactly one roadmap phase.
 
 ### Automation Pipeline
 
-- [ ] **AUTO-01**: A **Ghost publish/update webhook** triggers an automatic site rebuild + redeploy with no manual step.
-- [ ] **AUTO-02**: A **project release** (tag/build in its repo) triggers the matching code page to update automatically.
-- [ ] **AUTO-03**: **OG cards regenerate inside the pipeline** on content change, never hand-rendered.
-- [ ] **AUTO-04**: **Coolify deploys** the SSR site from the private GitHub repo; the whole publish → live path is zero-touch.
+- [x] **AUTO-01**: A **Ghost publish/update webhook** triggers an automatic site rebuild + redeploy with no manual step.
+- [x] **AUTO-02**: A **project release** (tag/build in its repo) triggers the matching code page to update automatically.
+- [x] **AUTO-03**: **OG cards regenerate inside the pipeline** on content change, never hand-rendered.
+- [x] **AUTO-04**: **Coolify deploys** the SSR site from the private GitHub repo; the whole publish → live path is zero-touch.
 
 ### Deploy & Go Live
 
-- [ ] **DPLY-01**: The SSR site is validated on a **staging subdomain** over real Coolify/Let's-Encrypt HTTPS, reading live Ghost, before any apex cutover.
+- [x] **DPLY-01**: The SSR site is validated on a **staging subdomain** over real Coolify/Let's-Encrypt HTTPS, reading live Ghost, before any apex cutover.
 - [ ] **DPLY-02**: **`jcrenshaw.dev` is live** over HTTPS behind Cloudflare Pro, served by the automated pipeline end to end.
 
 ## v2 Requirements
@@ -75,11 +75,11 @@ Deferred. Tracked, not in the current roadmap.
 | CUT-01 | Phase 3 | Complete |
 | CUT-02 | Phase 3 | Complete |
 | CUT-03 | Phase 3 | Complete |
-| AUTO-01 | Phase 4 | Pending |
-| AUTO-02 | Phase 4 | Pending |
-| AUTO-03 | Phase 4 | Pending |
-| AUTO-04 | Phase 4 | Pending |
-| DPLY-01 | Phase 4 | Pending |
+| AUTO-01 | Phase 4 | Complete |
+| AUTO-02 | Phase 4 | Complete |
+| AUTO-03 | Phase 4 | Complete |
+| AUTO-04 | Phase 4 | Complete |
+| DPLY-01 | Phase 4 | Complete |
 | DPLY-02 | Phase 5 | Pending |
 
 **Coverage:** 15 v1 requirements, 15 mapped, 0 unmapped

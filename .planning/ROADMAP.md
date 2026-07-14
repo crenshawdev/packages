@@ -21,7 +21,7 @@ so Ghost stand-up and deploy are unblocked.
 - [x] **Phase 1: Astro SSR foundation** - server output + Node adapter behind a data abstraction; design unchanged, content still from markdown
 - [x] **Phase 2: Ghost stand-up & seed** - self-hosted Ghost + MySQL on the droplet, seeded from 19 posts, newsletter + Mailgun, Content API key
 - [x] **Phase 3: Content API cutover** - front end reads Ghost instead of markdown, full render parity
-- [ ] **Phase 4: Automation pipeline** - publish/release webhooks, in-pipeline OG regen, Coolify deploy, validated on staging HTTPS
+- [x] **Phase 4: Automation pipeline** - publish/release webhooks, in-pipeline OG regen, Coolify deploy, validated on staging HTTPS
 - [ ] **Phase 5: Go live** - apex cutover to jcrenshaw.dev behind Cloudflare Pro, end-to-end automated
 
 ## Phase Details
