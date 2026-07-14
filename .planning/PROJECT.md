@@ -55,7 +55,7 @@ Hypotheses until shipped and confirmed live:
 - **Front end:** Astro `^6.2.2`. Currently `output: static`; the re-scope moves it to server output + Node adapter. Design in `BaseLayout.astro` + `Dock`/`Panel`; global CSS in `src/styles/global.css`. Pages in `src/pages/`. OG cards in `og/*.html` → `public/*.png` at 1200×630.
 - **Content today:** 19 markdown posts in `./posts` (root), glob-loaded via `src/content.config.ts`, Ghost-export-shaped frontmatter (`published_at` required). The markdown still carries `__GHOST_URL__` markers — it IS the Ghost export in markdown form, which is what seeds the fresh Ghost.
 - **Ghost:** fresh stand-up. John used Ghost(Pro) before, cancelled months ago; no members, no Stripe, no export JSON kept. Seed once from the local markdown.
-- **Infra:** DO droplet `167.99.0.56` (private `10.116.0.2`), NYC1, 2vCPU / 4GB / 80GB, $24/mo, Coolify, behind Cloudflare Pro. 4GB is tight for Ghost + MySQL + Coolify + SSR — expand if needed. **Coolify admin is registered** (the pending human step is done). `minas-tirith` is the private build/test box, never the public front door.
+- **Infra:** DO droplet `137.184.184.60`, SFO3, 8GB, Coolify, behind Cloudflare Pro. **Coolify admin is registered** (the pending human step is done). `minas-tirith` is the private build/test box, never the public front door.
 
 ## Constraints
 

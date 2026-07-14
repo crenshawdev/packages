@@ -1,6 +1,6 @@
 # jcrenshaw.dev — project notes
 
-Astro 6 static site for jcrenshaw.dev (blog + project pages), deployed to GitLab Pages.
+Astro 6 SSR site (server output + Node adapter) for jcrenshaw.dev (blog + project pages), served by Coolify on the DO droplet behind Cloudflare Pro.
 
 ## Commands
 - `npm run dev` — local dev server
@@ -16,4 +16,4 @@ Astro 6 static site for jcrenshaw.dev (blog + project pages), deployed to GitLab
 
 ## Gotchas
 - `trailingSlash: 'never'` with `build.format: 'directory'` — keep internal links extensionless and trailing-slash-free.
-- CI (`.gitlab-ci.yml`) runs only on the default branch, does `npm ci && npm run build`, then `mv dist public`. It does NOT run `render-og.mjs`, so commit regenerated OG PNGs in `public/`.
+- Coolify builds the repo `Dockerfile` on push and runs the SSR server. `npm run build` fires the `prebuild` step (`node og/render-og.mjs`) inside the image build, so OG cards regenerate in-pipeline as untracked build artifacts and are no longer committed.
