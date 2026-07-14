@@ -16,14 +16,19 @@
 // Vars (wrangler.toml [vars]):
 //   CF_ZONE_ID    - the jcrenshaw.dev zone id (not a secret).
 
-// Constant-time comparison so a wrong secret can't be recovered by timing.
-function timingSafeEqual(a, b) {
+// Constant-time comparison. Both sides are SHA-256'd first so the compare runs
+// over fixed 32-byte digests: a wrong secret leaks neither its bytes (timing)
+// nor its length (no early length-mismatch return).
+async function safeEqual(a, b) {
   const enc = new TextEncoder();
-  const ab = enc.encode(a);
-  const bb = enc.encode(b);
-  if (ab.length !== bb.length) return false;
+  const [ah, bh] = await Promise.all([
+    crypto.subtle.digest('SHA-256', enc.encode(a)),
+    crypto.subtle.digest('SHA-256', enc.encode(b)),
+  ]);
+  const av = new Uint8Array(ah);
+  const bv = new Uint8Array(bh);
   let diff = 0;
-  for (let i = 0; i < ab.length; i++) diff |= ab[i] ^ bb[i];
+  for (let i = 0; i < av.length; i++) diff |= av[i] ^ bv[i];
   return diff === 0;
 }
 
@@ -33,9 +38,12 @@ export default {
       return new Response('Method Not Allowed', { status: 405 });
     }
 
-    // Shared secret is the last non-empty path segment: /purge/<secret>
-    const provided = new URL(request.url).pathname.split('/').filter(Boolean).pop() || '';
-    if (!env.PURGE_SECRET || !timingSafeEqual(provided, env.PURGE_SECRET)) {
+    // Require the exact route shape `/purge/<secret>` - nothing looser.
+    const parts = new URL(request.url).pathname.split('/').filter(Boolean);
+    if (parts.length !== 2 || parts[0] !== 'purge') {
+      return new Response('Not Found', { status: 404 });
+    }
+    if (!env.PURGE_SECRET || !(await safeEqual(parts[1], env.PURGE_SECRET))) {
       return new Response('Unauthorized', { status: 401 });
     }
 
