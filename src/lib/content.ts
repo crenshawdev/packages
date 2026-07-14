@@ -1,4 +1,9 @@
-import { getCollection, getEntry, render } from 'astro:content';
+import { GHOST_URL, GHOST_CONTENT_API_KEY } from 'astro:env/server';
+import {
+  createComponent,
+  renderTemplate,
+  unescapeHTML,
+} from 'astro/runtime/server/index.js';
 
 export interface Post {
   id: string;
@@ -9,37 +14,70 @@ export interface Post {
   metaDescription: string | null;
   publishedAt: Date;
   tags: string[];
+  featureImage: string | null;
 }
 
-type PostEntry = Awaited<ReturnType<typeof getCollection<'posts'>>>[number];
-
-function isPublished(entry: PostEntry): boolean {
-  return (
-    entry.data.type === 'post' &&
-    entry.data.status !== 'draft' &&
-    entry.data.visibility !== 'private'
-  );
+interface GhostTag {
+  name: string;
 }
 
-function toPost(entry: PostEntry): Post {
+interface GhostPost {
+  id: string;
+  slug: string;
+  title: string;
+  html?: string | null;
+  custom_excerpt?: string | null;
+  meta_description?: string | null;
+  published_at: string;
+  feature_image?: string | null;
+  tags?: GhostTag[];
+}
+
+interface GhostPage {
+  html?: string | null;
+}
+
+function ghostConfig(): { url: string; key: string } {
+  if (!GHOST_URL || !GHOST_CONTENT_API_KEY) {
+    throw new Error(
+      'Missing GHOST_URL / GHOST_CONTENT_API_KEY — set both in the environment before reading content.',
+    );
+  }
+  return { url: GHOST_URL, key: GHOST_CONTENT_API_KEY };
+}
+
+async function fetchGhost<T>(resource: string, params: string): Promise<T> {
+  const { url, key } = ghostConfig();
+  const endpoint = `${url}/ghost/api/content/${resource}/?key=${key}&${params}`;
+  const res = await fetch(endpoint);
+  if (!res.ok) {
+    throw new Error(`Ghost Content API ${resource} -> HTTP ${res.status}`);
+  }
+  return (await res.json()) as T;
+}
+
+function toPost(p: GhostPost): Post {
   return {
-    id: entry.id,
-    slug: entry.data.slug ?? entry.id,
-    title: entry.data.title,
-    body: entry.body ?? '',
-    excerpt: entry.data.excerpt ?? null,
-    metaDescription: entry.data.meta_description ?? null,
-    publishedAt: entry.data.published_at,
-    tags: entry.data.tags ?? [],
+    id: p.id,
+    slug: p.slug,
+    title: p.title,
+    body: p.html ?? '',
+    excerpt: p.custom_excerpt ?? null,
+    metaDescription: p.meta_description ?? null,
+    publishedAt: new Date(p.published_at),
+    tags: (p.tags ?? []).map((t) => t.name),
+    featureImage: p.feature_image ?? null,
   };
 }
 
 export async function getPublishedPosts(): Promise<Post[]> {
-  const all = await getCollection('posts');
-  return all
-    .filter(isPublished)
-    .sort((a, b) => b.data.published_at.valueOf() - a.data.published_at.valueOf())
-    .map(toPost);
+  const { posts } = await fetchGhost<{ posts: GhostPost[] }>(
+    'posts',
+    'limit=all&include=tags&formats=html&fields=id,slug,title,html,custom_excerpt,meta_description,published_at,feature_image',
+  );
+  return posts
+    .map(toPost)
+    .sort((a, b) => b.publishedAt.valueOf() - a.publishedAt.valueOf());
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | undefined> {
@@ -48,9 +86,24 @@ export async function getPostBySlug(slug: string): Promise<Post | undefined> {
 }
 
 export async function renderBody(id: string) {
-  const entry = await getEntry('posts', id);
-  if (!entry) {
+  let html: string | undefined;
+
+  if (id === 'about') {
+    const { pages } = await fetchGhost<{ pages: GhostPage[] }>(
+      'pages',
+      'filter=slug:about&formats=html&fields=html',
+    );
+    html = pages?.[0]?.html ?? undefined;
+  } else {
+    const posts = await getPublishedPosts();
+    html = posts.find((p) => p.id === id)?.body;
+  }
+
+  if (html === undefined) {
     throw new Error(`No post entry found for id "${id}"`);
   }
-  return render(entry);
+
+  const safe = html;
+  const Content = createComponent(() => renderTemplate`${unescapeHTML(safe)}`);
+  return { Content };
 }
