@@ -72,12 +72,17 @@ The in-repo slice (Tasks 1-5) and John's external console steps (Tasks 6-9) are 
 
 ## Open items (Phase 5 handoffs)
 
-- Auto-deploy webhook (deploy-key Stage F): confirm Coolify's per-resource deploy webhook
-  is wired into the repo's GitHub webhooks so a `git push` auto-redeploys. Verify in /cad-verify.
-- AUTO-01 purge half: the webhook.site target is a placeholder. The real Cloudflare
-  cache-purge API target attaches at Phase 5 apex cutover, when the Cloudflare Pro proxy
-  (and thus an edge cache) first exists. On DNS-only staging there is no edge cache to purge.
-- Test post `Webhook Test 0714` to be deleted from Ghost after verification.
+- Auto-deploy webhook (deploy-key Stage F): DEFERRED to Phase 5 by decision (2026-07-14).
+  Coolify does not yet auto-redeploy on `git push`; wiring its per-resource deploy webhook
+  into the repo's GitHub webhooks is Phase 5 work. Content publishing is already zero-touch
+  via SSR, so this only affects code/design pushes.
+- AUTO-01 purge half: the webhook.site target is a placeholder. There is ONE Ghost
+  (`ghost.jcrenshaw.dev`) feeding both staging and the future apex, so the `Staging cache
+  purge` integration and its three event subscriptions carry over to prod unchanged - in
+  Phase 5 only the webhooks' Target URL is repointed to the real Cloudflare cache-purge
+  endpoint (not recreated). The purge target attaches at apex cutover, when the Cloudflare
+  Pro proxy (and thus an edge cache) first exists; on DNS-only staging there is nothing to purge.
+- Test post `Webhook Test 0714` deleted from Ghost (2026-07-14).
 - Stale docs for a Phase 5 pass: `CLAUDE.md` Gotchas still references the removed
   `.gitlab-ci.yml`; `PROJECT.md` Infra names the retired NYC1 droplet (D-05).
 - Pre-existing untracked `RESUME.md` left untouched (not a Phase 4 artifact).
