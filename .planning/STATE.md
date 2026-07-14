@@ -1,6 +1,6 @@
 # State
 
 Phase: 5 of 5 (Go live)
-Status: executed
-Next: /cad-verify 5
+Status: phase complete
+Next: /cad-land
 Updated: 2026-07-14

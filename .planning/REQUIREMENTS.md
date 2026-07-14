@@ -44,7 +44,7 @@ Committed scope. Each maps to exactly one roadmap phase.
 ### Deploy & Go Live
 
 - [x] **DPLY-01**: The SSR site is validated on a **staging subdomain** over real Coolify/Let's-Encrypt HTTPS, reading live Ghost, before any apex cutover.
-- [ ] **DPLY-02**: **`jcrenshaw.dev` is live** over HTTPS behind Cloudflare Pro, served by the automated pipeline end to end.
+- [x] **DPLY-02**: **`jcrenshaw.dev` is live** over HTTPS behind Cloudflare Pro, served by the automated pipeline end to end.
 
 ## v2 Requirements
 
@@ -80,7 +80,7 @@ Deferred. Tracked, not in the current roadmap.
 | AUTO-03 | Phase 4 | Complete |
 | AUTO-04 | Phase 4 | Complete |
 | DPLY-01 | Phase 4 | Complete |
-| DPLY-02 | Phase 5 | Pending |
+| DPLY-02 | Phase 5 | Complete |
 
 **Coverage:** 15 v1 requirements, 15 mapped, 0 unmapped
 
