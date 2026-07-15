@@ -48,5 +48,6 @@ aggregate.
 ## Deploy
 
 Deploys as a Coolify service on the DO droplet at `pkg.jcrenshaw.dev`, behind
-Cloudflare Pro. This phase's rebuild trigger is a Coolify manual redeploy; the
-release webhook wiring is a later phase.
+Cloudflare Pro. On an app's `v*` release, that app's CI notifies the Coolify
+deploy webhook (`AGGREGATOR_WEBHOOK_URL`), which force/no-cache-rebuilds and
+republishes the aggregator; a manual Coolify redeploy is the fallback trigger.
