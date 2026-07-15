@@ -48,6 +48,21 @@ dl() { # <url> <dest>
   return 1
 }
 
+# Resolve an app's current "latest" release tag from the web redirect (no API
+# token, no rate limit). Downloading by explicit tag — and logging it — turns a
+# stale `latest` (a new release marked prerelease, or GitHub pointer lag) from a
+# SILENT old-version republish into a visible, auditable one: the build log shows
+# exactly which tag each app resolved to, which the zero-touch EVT-01 check reads.
+resolve_tag() { # <project>
+  local eff
+  eff="$(curl -fsSL -o /dev/null -w '%{url_effective}' \
+        "https://github.com/$1/releases/latest")" || return 1
+  case "$eff" in
+    */releases/tag/*) printf '%s' "${eff##*/tag/}" ;;
+    *) echo "FATAL: no release tag resolved for $1 (got: $eff)" >&2; return 1 ;;
+  esac
+}
+
 # Skip comment/blank lines BEFORE splitting — a '#' comment may contain a ' | '
 # and apostrophes, which must never reach the field parser.
 while IFS= read -r line || [ -n "$line" ]; do
@@ -58,8 +73,9 @@ while IFS= read -r line || [ -n "$line" ]; do
   appid="$(trim "$appid")"; project="$(trim "$project")"
   debfile="$(trim "$debfile")"; rpmfile="$(trim "$rpmfile")"
   [ -z "$appid" ] && continue
-  rel="https://github.com/${project}/releases/latest/download"
-  echo "==> $appid ($project)"
+  tag="$(resolve_tag "$project")"
+  echo "==> $appid ($project) latest=$tag"
+  rel="https://github.com/${project}/releases/download/${tag}"
   dl "${rel}/${debfile}" "$debs/$debfile"
   dl "${rel}/${rpmfile}" "$rpms/$rpmfile"
 done < apps.list
