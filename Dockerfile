@@ -19,7 +19,21 @@ COPY aggregate.sh apps.list index.html ./
 # stage (discarded from the final image), never COPY/ENV'd into a served layer.
 ARG GPG_SIGNING_KEY_B64
 ARG PACKAGES_GPG_KEY=7406571FFDA331EEB4E960418B03E021E43EC13A
-RUN echo "$GPG_SIGNING_KEY_B64" | base64 -d | gpg --batch --import \
+ARG CACHE_BUST=
+
+# Cache-bust the aggregate layer. aggregate.sh fetches each app's LATEST GitHub
+# Release, so an identical-input rebuild would cache-hit and republish the OLD
+# release. Each app's releases Atom feed content (and Last-Modified) changes when
+# a new release publishes, so these ADD layers invalidate and cascade into the
+# aggregate RUN below, forcing a re-fetch. CACHE_BUST is the deterministic in-repo
+# bust (a deploy passing --build-arg CACHE_BUST=<version|timestamp> always
+# invalidates the layer); the Atom feeds are the zero-config backup. Same order
+# and set as the active apps.list lines (tempest, Placer, atmos).
+ADD https://github.com/crenshawdev/tempest/releases.atom /tmp/cachebust/tempest.atom
+ADD https://github.com/crenshawdev/Placer/releases.atom /tmp/cachebust/placer.atom
+ADD https://github.com/crenshawdev/atmos/releases.atom /tmp/cachebust/atmos.atom
+RUN echo "cache-bust: $CACHE_BUST" \
+    && echo "$GPG_SIGNING_KEY_B64" | base64 -d | gpg --batch --import \
     && PACKAGES_GPG_KEY="$PACKAGES_GPG_KEY" ./aggregate.sh
 
 # --- verify-apt: install from the built APT repo over file:// ---------------
@@ -32,8 +46,10 @@ RUN gpg --dearmor < /public/jcrenshaw.asc > /usr/share/keyrings/jcrenshaw.gpg \
     && echo "deb [signed-by=/usr/share/keyrings/jcrenshaw.gpg] file:/public/deb stable main" \
          > /etc/apt/sources.list.d/jcrenshaw.list \
     && apt-get update \
-    && apt-get install -y cosmic-ext-applet-tempest \
+    && apt-get install -y cosmic-ext-applet-tempest placer atmos \
     && dpkg -s cosmic-ext-applet-tempest | grep -q '^Status: install ok installed' \
+    && dpkg -s placer | grep -q '^Status: install ok installed' \
+    && dpkg -s atmos | grep -q '^Status: install ok installed' \
     && touch /verified-apt
 
 # --- verify-rpm: install from the built RPM repo over file:// ---------------
@@ -49,8 +65,10 @@ RUN rpm --import /public/jcrenshaw.asc \
          'repo_gpgcheck=1' \
          'gpgkey=file:///public/jcrenshaw.asc' \
          > /etc/yum.repos.d/jcrenshaw-verify.repo \
-    && dnf install -y cosmic-ext-applet-tempest \
+    && dnf install -y cosmic-ext-applet-tempest placer atmos \
     && rpm -q cosmic-ext-applet-tempest \
+    && rpm -q placer \
+    && rpm -q atmos \
     && touch /verified-rpm
 
 # --- serve: nginx static, gated on both verify stages -----------------------
