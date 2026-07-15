@@ -28,10 +28,8 @@ ARG CACHE_BUST=
 # aggregate RUN below, forcing a re-fetch. CACHE_BUST is the deterministic in-repo
 # bust (a deploy passing --build-arg CACHE_BUST=<version|timestamp> always
 # invalidates the layer); the Atom feeds are the zero-config backup. Same order
-# and set as the active apps.list lines (tempest, Placer, atmos).
+# and set as the active apps.list lines (tempest).
 ADD https://github.com/crenshawdev/tempest/releases.atom /tmp/cachebust/tempest.atom
-ADD https://github.com/crenshawdev/Placer/releases.atom /tmp/cachebust/placer.atom
-ADD https://github.com/crenshawdev/atmos/releases.atom /tmp/cachebust/atmos.atom
 RUN echo "cache-bust: $CACHE_BUST" \
     && echo "$GPG_SIGNING_KEY_B64" | base64 -d | gpg --batch --import \
     && PACKAGES_GPG_KEY="$PACKAGES_GPG_KEY" ./aggregate.sh
@@ -46,10 +44,8 @@ RUN gpg --dearmor < /public/jcrenshaw.asc > /usr/share/keyrings/jcrenshaw.gpg \
     && echo "deb [signed-by=/usr/share/keyrings/jcrenshaw.gpg] file:/public/deb stable main" \
          > /etc/apt/sources.list.d/jcrenshaw.list \
     && apt-get update \
-    && apt-get install -y cosmic-ext-applet-tempest placer atmos \
+    && apt-get install -y cosmic-ext-applet-tempest \
     && dpkg -s cosmic-ext-applet-tempest | grep -q '^Status: install ok installed' \
-    && dpkg -s placer | grep -q '^Status: install ok installed' \
-    && dpkg -s atmos | grep -q '^Status: install ok installed' \
     && touch /verified-apt
 
 # --- verify-rpm: install from the built RPM repo over file:// ---------------
@@ -65,10 +61,8 @@ RUN rpm --import /public/jcrenshaw.asc \
          'repo_gpgcheck=1' \
          'gpgkey=file:///public/jcrenshaw.asc' \
          > /etc/yum.repos.d/jcrenshaw-verify.repo \
-    && dnf install -y cosmic-ext-applet-tempest placer atmos \
+    && dnf install -y cosmic-ext-applet-tempest \
     && rpm -q cosmic-ext-applet-tempest \
-    && rpm -q placer \
-    && rpm -q atmos \
     && touch /verified-rpm
 
 # --- serve: nginx static, gated on both verify stages -----------------------

@@ -8,5 +8,3 @@
 # the app's own GitHub Actions attaches at the Release root. Add an app by
 # appending a line here once that app has a published GitHub Release.
 com.vintagetechie.CosmicExtAppletTempest | crenshawdev/tempest | cosmic-ext-applet-tempest_amd64.deb | cosmic-ext-applet-tempest.x86_64.rpm
-dev.jcrenshaw.Placer | crenshawdev/Placer | placer_amd64.deb | placer.x86_64.rpm
-dev.jcrenshaw.Atmos | crenshawdev/atmos | atmos_amd64.deb | atmos.x86_64.rpm
