@@ -46,7 +46,7 @@ const markSrc = `${base}/favicon.svg`;
   <main class="home">
     <h1 class="sr-only">John Crenshaw — essays and Rust tools for the Linux desktop</h1>
 
-    <!-- Identity band: hero copy + callsign card -->
+    <!-- Identity band -->
     <section class="top">
       <div class="hero-copy">
         <div class="hero-id">
@@ -59,29 +59,6 @@ const markSrc = `${base}/favicon.svg`;
         <p class="tagline">I write essays <span>and build Rust tools for the Linux desktop.</span></p>
         <p class="bio">I built other people's software since the 80s. Payment rails moving debit, credit, and ACH. HIPAA data mining. Retinal biometric access for the DoD. EPROM tooling against Intel silicon that hadn't shipped yet. The backend systems you never see. Retired now. These days I build my own, in Rust, for the Linux desktop I actually run.</p>
       </div>
-      <aside class="card callsign-card">
-        <div class="callsign">
-          <span class="mark" aria-hidden="true"><img src={markSrc} alt="" width="54" height="54" /></span>
-          <div class="nf">
-            <div class="nf-host">john@jcrenshaw</div>
-            <div class="nf-sep">───────────</div>
-            <div class="nf-row"><span class="k">host</span><span class="v">Chicago</span></div>
-            <div class="nf-row"><span class="k">uptime</span><span class="v">since 1956</span></div>
-            <div class="nf-row"><span class="k">os</span><span class="v">arch · zen</span></div>
-            <div class="nf-row"><span class="k">shell</span><span class="v">rust · c</span></div>
-            <div class="nf-row"><span class="k">status</span><span class="v">retired</span></div>
-            <div class="nf-row"><span class="k">wm</span><span class="v">cosmic</span></div>
-            <div class="nf-swatch" aria-hidden="true">
-              <i style="background:#e40303"></i>
-              <i style="background:#ff8c00"></i>
-              <i style="background:#ffed00"></i>
-              <i style="background:#008026"></i>
-              <i style="background:#004dff"></i>
-              <i style="background:#750787"></i>
-            </div>
-          </div>
-        </div>
-      </aside>
     </section>
 
     <!-- One hand: the differentiator made visible -->
@@ -145,8 +122,8 @@ const markSrc = `${base}/favicon.svg`;
       margin: 0 0 16px;
     }
 
-    /* Identity band: hero copy + callsign card */
-    .top { display: grid; grid-template-columns: 1fr 264px; gap: 40px; align-items: start; padding-top: 8px; }
+    /* Identity band */
+    .top { padding-top: 8px; }
     .hero-id { display: flex; align-items: center; gap: 20px; margin-bottom: 26px; }
     .hero-mark { width: 64px; height: 64px; flex-shrink: 0; border-radius: 14px; }
     .hero-name { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); line-height: 1.1; }
@@ -154,9 +131,6 @@ const markSrc = `${base}/favicon.svg`;
     .tagline { font-size: 27px; font-weight: 400; color: var(--ink); max-width: 20ch; line-height: 1.26; margin: 0 0 20px; }
     .tagline span { color: var(--accent-2); font-weight: 500; }
     .bio { max-width: 52ch; font-size: 16px; color: var(--ink-3); margin: 0; }
-    .callsign-card { align-self: start; }
-    .callsign .mark { width: 54px; height: 54px; flex-shrink: 0; }
-    .callsign .mark img { width: 100%; height: 100%; display: block; border-radius: 13px; }
 
     /* One hand */
     .onehand h2 { font-size: 23px; font-weight: 600; color: var(--ink); margin: 0 0 8px; line-height: 1.25; }
@@ -174,7 +148,7 @@ const markSrc = `${base}/favicon.svg`;
     .ghost:hover { background: var(--accent-soft); color: var(--ink); }
 
     @media (max-width: 720px) {
-      .top, .desk { grid-template-columns: 1fr; }
+      .desk { grid-template-columns: 1fr; }
       .tagline { font-size: 25px; }
       .hero-name { font-size: 26px; }
     }
