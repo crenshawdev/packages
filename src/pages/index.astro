@@ -43,43 +43,6 @@ const markSrc = `${base}/favicon.svg`;
   title="John Crenshaw"
   description="The front door to John Crenshaw: retired engineer writing essays and building Rust tools for the Linux desktop."
 >
-  <script is:inline slot="head">
-    // Pre-paint: only the first visit (and not reduced-motion) gets the boot overlay.
-    // No JS or returning visitor -> overlay stays display:none, entry shows immediately.
-    try {
-      if (
-        !localStorage.getItem('jc_booted') &&
-        !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      ) {
-        document.documentElement.classList.add('booting');
-      }
-    } catch (e) {}
-  </script>
-
-  <div class="boot-overlay" aria-hidden="true" slot="overlay">
-    <div class="bl boot-dim" style="animation-delay:.06s">jcrenshaw.dev tty1</div>
-    <div class="bl" style="animation-delay:.11s">&nbsp;</div>
-    <div class="bl boot-dim" style="animation-delay:.17s">[    0.000018] Linux version 7.0.11-zen1-1-zen</div>
-    <div class="bl boot-dim" style="animation-delay:.23s">[    0.118003] Command line: ro quiet splash</div>
-    <div class="bl boot-dim" style="animation-delay:.29s">[    0.392104] Loading initial ramdisk ...</div>
-    <div class="bl boot-dim" style="animation-delay:.35s">[    0.661320] systemd 257 running in system mode</div>
-    <div class="bl" style="animation-delay:.41s"><span class="boot-ok">[  OK  ]</span> Reached target Local File Systems</div>
-    <div class="bl" style="animation-delay:.47s"><span class="boot-ok">[  OK  ]</span> Mounted /home/john</div>
-    <div class="bl" style="animation-delay:.53s"><span class="boot-ok">[  OK  ]</span> Started Network <span class="boot-dim">— github.com/crenshawdev</span></div>
-    <div class="bl" style="animation-delay:.59s"><span class="boot-ok">[  OK  ]</span> Loaded fonts <span class="boot-dim">— IBM Plex Mono / Sans</span></div>
-    <div class="bl" style="animation-delay:.65s"><span class="boot-ok">[  OK  ]</span> Applied theme <span class="boot-dim">— Deep Slate</span></div>
-    <div class="bl" style="animation-delay:.71s"><span class="boot-ok">[  OK  ]</span> Started about.service</div>
-    <div class="bl" style="animation-delay:.77s"><span class="boot-ok">[  OK  ]</span> Started writing.service <span class="boot-dim">— the blog</span></div>
-    <div class="bl" style="animation-delay:.83s"><span class="boot-ok">[  OK  ]</span> Started code.service <span class="boot-dim">— projects & repos</span></div>
-    <div class="bl" style="animation-delay:.89s"><span class="boot-ok">[  OK  ]</span> Started contact.service</div>
-    <div class="bl" style="animation-delay:.95s"><span class="boot-ok">[  OK  ]</span> Verified flatpak trust <span class="boot-dim">— single GPG root</span></div>
-    <div class="bl" style="animation-delay:1.01s"><span class="boot-ok">[  OK  ]</span> Reached target <span class="boot-ac">Front Door</span></div>
-    <div class="bl" style="animation-delay:1.07s">&nbsp;</div>
-    <div class="bl" style="animation-delay:1.13s"><span class="boot-dim">jcrenshaw login:</span> <span class="boot-user">john</span></div>
-    <div class="bl boot-user" style="animation-delay:1.20s">Welcome back, John.<span class="boot-cur"></span></div>
-    <div class="boot-skip">▸ press any key to skip</div>
-  </div>
-
   <main class="home">
     <h1 class="sr-only">John Crenshaw — essays and Rust tools for the Linux desktop</h1>
 
@@ -158,30 +121,6 @@ const markSrc = `${base}/favicon.svg`;
       <a class="ghost" href={code.href}>Browse the code on GitHub ↗</a>
     </section>
   </main>
-
-  <script is:inline>
-    (function () {
-      var html = document.documentElement;
-      if (!html.classList.contains('booting')) return;
-      var overlay = document.querySelector('.boot-overlay');
-      var done = false;
-      function end() {
-        if (done) return;
-        done = true;
-        window.removeEventListener('keydown', end);
-        window.removeEventListener('pointerdown', end);
-        if (overlay) overlay.classList.add('boot-done');
-        try { localStorage.setItem('jc_booted', '1'); } catch (e) {}
-        setTimeout(function () {
-          html.classList.remove('booting');
-          if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
-        }, 460);
-      }
-      setTimeout(end, 1950);
-      window.addEventListener('keydown', end);
-      window.addEventListener('pointerdown', end);
-    })();
-  </script>
 
   <style>
     .home {

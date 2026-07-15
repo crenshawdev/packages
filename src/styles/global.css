@@ -828,63 +828,6 @@ article.post h1 {
 .subscribe-more a:hover { color: var(--accent-2); }
 
 /* ============================================================
-   Boot sequence (first visit to the entry, JS-only)
-   ============================================================ */
-
-.boot-overlay { display: none; }
-html.booting,
-html.booting body { overflow: hidden; }
-/* The boot is a full-screen takeover; hide the desktop chrome until it clears.
-   (Also avoids the dock's backdrop-filter compositing above the overlay.) */
-.booting .panel,
-.booting .dock { display: none; }
-.booting .boot-overlay {
-  display: block;
-  position: fixed;
-  inset: 0;
-  z-index: var(--z-boot);
-  background: #07090c;
-  font-family: var(--mono);
-  font-size: 12.5px;
-  line-height: 1.5;
-  color: var(--ink-2);
-  padding: 26px 30px;
-  overflow: hidden;
-}
-.boot-overlay .bl { opacity: 0; white-space: pre-wrap; }
-.booting .boot-overlay .bl { animation: boot-line 0.13s ease forwards; }
-.boot-ok { color: var(--live); }
-.boot-dim { color: var(--ink-5); }
-.boot-ac { color: var(--accent-2); }
-.boot-user { color: var(--ink); }
-.boot-cur {
-  display: inline-block;
-  width: 8px;
-  height: 13px;
-  background: var(--ink-2);
-  vertical-align: -2px;
-  margin-left: 2px;
-}
-.booting .boot-cur { animation: boot-blink 0.8s steps(1) infinite; }
-.boot-skip {
-  position: absolute;
-  bottom: 22px;
-  left: 30px;
-  color: var(--ink-5);
-  font-size: 11px;
-  opacity: 0;
-}
-.booting .boot-skip { animation: boot-line 0.4s ease forwards 0.4s; }
-.boot-overlay.boot-done { animation: boot-out 0.45s ease forwards; }
-
-@keyframes boot-line {
-  from { opacity: 0; transform: translateY(2px); }
-  to   { opacity: 1; transform: none; }
-}
-@keyframes boot-blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
-@keyframes boot-out { to { opacity: 0; visibility: hidden; } }
-
-/* ============================================================
    Responsive — mobile sheets + bottom dock bar
    ============================================================ */
 
