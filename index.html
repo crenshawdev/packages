@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>jcrenshaw.dev APT &amp; RPM repos</title>
+<title>jcrenshaw.dev APT, RPM &amp; Flatpak repos</title>
 <style>
   :root {
     --bg: #fbfbfa; --fg: #1a1a1a; --muted: #5c5c5c; --line: #e4e4e0;
@@ -65,10 +65,11 @@
 <main>
   <header>
     <h1>jcrenshaw<span class="dot">.</span>dev APT &amp; RPM repos</h1>
-    <p class="lede">Install jcrenshaw.dev apps as <code class="inline">.deb</code> or
-      <code class="inline">.rpm</code> packages and get updates through
-      <code class="inline">apt</code> or <code class="inline">dnf</code>. Add the repo
-      once — everything else works like any other package on your system.</p>
+    <p class="lede">Install jcrenshaw.dev apps as <code class="inline">.deb</code>,
+      <code class="inline">.rpm</code>, or <code class="inline">flatpak</code> and get
+      updates through <code class="inline">apt</code>, <code class="inline">dnf</code>, or
+      <code class="inline">flatpak</code>. Add the repo once — everything else works like
+      any other package on your system.</p>
   </header>
 
   <h2>Add the repo</h2>
@@ -90,13 +91,21 @@ sudo apt update</pre>
   https://pkg.jcrenshaw.dev/rpm/jcrenshaw.repo</pre>
   </div>
 
+  <h3>Flatpak (COSMIC apps)</h3>
+  <div class="code">
+    <button class="copy" type="button">Copy</button>
+<pre>flatpak remote-add --if-not-exists jcrenshaw \
+  https://pkg.jcrenshaw.dev/flatpak/jcrenshaw.flatpakrepo</pre>
+  </div>
+
   <p>The repos are GPG-signed; your package manager verifies every download for you.</p>
 
   <h2>Install an app</h2>
   <div class="code">
     <button class="copy" type="button">Copy</button>
 <pre>sudo apt install __EXAMPLE_PKG__    # Debian / Ubuntu
-sudo dnf install __EXAMPLE_PKG__    # Fedora</pre>
+sudo dnf install __EXAMPLE_PKG__    # Fedora
+flatpak install jcrenshaw com.vintagetechie.CosmicExtAppletTempest    # Flatpak</pre>
   </div>
   <p>Available packages:</p>
   <ul>
@@ -112,7 +121,10 @@ __PACKAGE_LIST__
 sudo rm /etc/apt/sources.list.d/jcrenshaw.list /usr/share/keyrings/jcrenshaw.gpg
 
 # Fedora
-sudo rm /etc/yum.repos.d/jcrenshaw.repo</pre>
+sudo rm /etc/yum.repos.d/jcrenshaw.repo
+
+# Flatpak
+flatpak remote-delete jcrenshaw</pre>
   </div>
 
   <footer>

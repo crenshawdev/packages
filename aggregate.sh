@@ -138,4 +138,59 @@ repo_gpgcheck=1
 gpgkey=${BASE_URL}/jcrenshaw.asc
 EOF
 
-echo "Done. APT: ${BASE_URL}/deb (${CODENAME} main)  RPM: ${BASE_URL}/rpm"
+# --- Flatpak repo (mirror each app's signed OSTree, re-served as one remote) --
+# Each app's own CI (tempest's release.yml) builds an archive-z2 OSTree flatpak
+# repo, signs the commit with THIS SAME jcrenshaw store key, and publishes it to
+# GitHub Pages under /repo. We ostree-pull --mirror every app's stable ref into
+# one shared archive repo (public/flatpak), regenerate + re-sign the summary with
+# the store key, and serve it as a single remote at ${BASE_URL}/flatpak. Because
+# the upstream commits are already signed by the store key, the pull verifies
+# their signatures against it (no --no-gpg-verify) and the mirror stays trusted.
+#
+# Assumption for the current tempest-only scope: every app in apps.list publishes
+# such a Pages OSTree repo. When a flatpak-less app is added, gate this loop on a
+# per-app marker rather than mirroring unconditionally.
+fp="public/flatpak"
+store_pub="$work/store.gpg"
+gpg --batch --yes --export "$GPG_KEY" > "$store_pub"   # binary keyring for --gpg-import
+ostree --repo="$fp" init --mode=archive
+
+while IFS= read -r line || [ -n "$line" ]; do
+  line="$(trim "$line")"
+  [ -z "$line" ] && continue
+  case "$line" in \#*) continue;; esac
+  IFS='|' read -r appid project _debfile _rpmfile <<< "$line"
+  appid="$(trim "$appid")"; project="$(trim "$project")"
+  [ -z "$appid" ] && continue
+  owner="${project%%/*}"; reponame="${project##*/}"
+  pages="https://${owner}.github.io/${reponame}/repo"   # Pages root serves public/, OSTree under repo/
+  ref="app/${appid}/x86_64/stable"
+  echo "==> flatpak mirror $appid from $pages ($ref)"
+  ostree --repo="$fp" remote add --if-not-exists --gpg-import="$store_pub" "up-${appid}" "$pages" "$ref"
+  ostree --repo="$fp" pull --mirror --depth=-1 "up-${appid}" "$ref"
+done < apps.list
+
+# Regenerate the summary/appstream/static-deltas of the mirrored repo and sign
+# the summary with the store key so `flatpak remote-ls` / install verifies it.
+flatpak build-update-repo \
+  --generate-static-deltas \
+  --prune --prune-depth=20 \
+  --gpg-sign="$GPG_KEY" \
+  "$fp"
+
+# One .flatpakrepo descriptor for the whole remote. GPGKey is the base64 of the
+# store public key (the key that signed every mirrored commit and the summary).
+store_pub_b64="$(gpg --batch --yes --export "$GPG_KEY" | base64 -w0)"
+cat > "$fp/jcrenshaw.flatpakrepo" <<EOF
+[Flatpak Repo]
+Version=1
+Title=jcrenshaw.dev Apps
+Url=${BASE_URL}/flatpak
+Homepage=https://jcrenshaw.dev
+Comment=COSMIC apps from jcrenshaw.dev
+Description=Flatpak remote for jcrenshaw.dev COSMIC apps
+DefaultBranch=stable
+GPGKey=${store_pub_b64}
+EOF
+
+echo "Done. APT: ${BASE_URL}/deb (${CODENAME} main)  RPM: ${BASE_URL}/rpm  Flatpak: ${BASE_URL}/flatpak"

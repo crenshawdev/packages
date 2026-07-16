@@ -1,16 +1,19 @@
 # Multi-stage build that IS the install-verify gate for the jcrenshaw.dev
-# APT/RPM aggregator. A failed verify fails `docker build`, so Coolify never
-# swaps the running container and pkg.jcrenshaw.dev keeps serving the prior repo.
+# APT/RPM/Flatpak aggregator. A failed verify fails `docker build`, so Coolify
+# never swaps the running container and pkg.jcrenshaw.dev keeps serving the prior
+# repo.
 #
-#   aggregate   -> imports the signing key, runs aggregate.sh -> /work/public
-#   verify-apt  -> installs cosmic-ext-applet-tempest from public/deb (file://)
-#   verify-rpm  -> installs cosmic-ext-applet-tempest from public/rpm (file://)
-#   serve       -> nginx serving public/, gated on both verify stages
+#   aggregate      -> imports the signing key, runs aggregate.sh -> /work/public
+#   verify-apt     -> installs cosmic-ext-applet-tempest from public/deb (file://)
+#   verify-rpm     -> installs cosmic-ext-applet-tempest from public/rpm (file://)
+#   verify-flatpak -> GPG-verifies + lists the app ref from public/flatpak (file://)
+#   serve          -> nginx serving public/, gated on all verify stages
 
 # --- aggregate: build the signed repos -------------------------------------
 FROM debian:bookworm-slim AS aggregate
 RUN apt-get update && apt-get install -y --no-install-recommends \
       reprepro createrepo-c rpm gnupg ca-certificates curl coreutils \
+      flatpak flatpak-builder ostree \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /work
 COPY aggregate.sh apps.list index.html ./
@@ -65,12 +68,30 @@ RUN rpm --import /public/jcrenshaw.asc \
     && rpm -q cosmic-ext-applet-tempest \
     && touch /verified-rpm
 
-# --- serve: nginx static, gated on both verify stages -----------------------
+# --- verify-flatpak: GPG-verify the mirrored OSTree repo over file:// --------
+# `flatpak remote-ls` with verification on validates the signed summary against
+# the store key and lists the app refs; a bad signature or malformed repo fails
+# here (and thus fails the build). It deliberately stops short of a full
+# runtime-resolving `flatpak install`, which would couple every aggregator build
+# to Flathub's availability for the org.freedesktop.Platform runtime.
+FROM debian:bookworm-slim AS verify-flatpak
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      flatpak gnupg ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+COPY --from=aggregate /work/public /public
+RUN gpg --dearmor < /public/jcrenshaw.asc > /tmp/store.gpg \
+    && flatpak remote-add --user --gpg-import=/tmp/store.gpg jcrenshaw-verify file:///public/flatpak \
+    && flatpak remote-ls --user jcrenshaw-verify --app --columns=ref \
+         | grep -q 'com.vintagetechie.CosmicExtAppletTempest' \
+    && touch /verified-flatpak
+
+# --- serve: nginx static, gated on all verify stages ------------------------
 FROM nginx:alpine AS serve
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=aggregate /work/public /usr/share/nginx/html
-# These two COPYs pull both verify stages into the build graph. Without them
-# Docker would skip the unreferenced verify stages and the gate would be dead.
+# These COPYs pull every verify stage into the build graph. Without them Docker
+# would skip the unreferenced verify stages and the gate would be dead.
 COPY --from=verify-apt /verified-apt /tmp/verified-apt
 COPY --from=verify-rpm /verified-rpm /tmp/verified-rpm
+COPY --from=verify-flatpak /verified-flatpak /tmp/verified-flatpak
 EXPOSE 80
