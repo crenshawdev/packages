@@ -39,7 +39,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 // serving a stale cached preview (they cache keyed on the image URL).
 const ogImage = new URL(`${base}${ogImageProp ?? '/og-image.png?v=2026-07'}`, Astro.site).toString();
 const ogDescription =
-  description ?? 'Notes on Linux, Rust, retirement, and shipping software you actually understand.';
+  description ?? 'Notes on Linux, Rust, and shipping software you actually understand, from an engineer who helps businesses build the right thing and skip the rest.';
 
 const clock = new Intl.DateTimeFormat([], { hour: 'numeric', minute: '2-digit' }).format(new Date());
 ---
