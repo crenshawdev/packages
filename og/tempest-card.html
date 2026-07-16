@@ -1,7 +1,8 @@
 <!doctype html>
 <!--
-  Source for public/tempest-og.png — the social card for /code/tempest.
-  Mirrors the desktop-OS redesign (Deep Slate + Arch blue, IBM Plex).
+  Source for public/tempest-og.png — the tempest project link-preview card.
+  Crisp text overlaid on the shared art in og/art/card-bg.png ({{CARD_BG}}).
+  {{TEMPEST_VERSION}} is injected from the live GitHub tag by render-og.mjs.
   Edit this file, then run:  node og/render-og.mjs tempest
   Canvas is exactly 1200x630 (Open Graph / Twitter summary_large_image).
 -->
@@ -16,240 +17,95 @@
     />
     <style>
       :root {
-        --bg: #0e1218;
-        --bg-deep: #0b0e13;
-        --surface-2: #11151c;
-        --surface-3: #1a212c;
         --ink: #e8ecf2;
         --ink-2: #c6ccd6;
         --ink-3: #9aa2af;
         --ink-5: #7e8595;
-        --line: rgba(255, 255, 255, 0.08);
         --accent: #1793d1;
         --accent-2: #3aabe4;
-        --accent-soft: rgba(23, 147, 209, 0.15);
-        --accent-glow: rgba(23, 147, 209, 0.6);
-        --accent-line: rgba(23, 147, 209, 0.42);
         --sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
         --mono: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
       }
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body { width: 1200px; height: 630px; }
       body {
+        position: relative;
         font-family: var(--sans);
         color: var(--ink);
-        background:
-          radial-gradient(1100px 620px at 78% -8%, rgba(23, 147, 209, 0.10), transparent 60%),
-          var(--bg-deep);
-        display: flex;
-        flex-direction: column;
+        background-color: #0b0e13;
+        background-image:
+          linear-gradient(90deg, rgba(4, 6, 10, 0.94) 0%, rgba(4, 6, 10, 0.82) 42%, rgba(4, 6, 10, 0.35) 66%, rgba(4, 6, 10, 0) 100%),
+          url('{{CARD_BG}}');
+        background-size: cover, cover;
+        background-position: center, center;
+        background-repeat: no-repeat, no-repeat;
         overflow: hidden;
       }
 
-      /* Top panel ------------------------------------------------ */
-      .panel {
-        height: 46px;
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 26px;
-        background: rgba(11, 14, 19, 0.7);
-        border-bottom: 1px solid var(--line);
-      }
-      .panel-home {
+      .wordmark {
+        position: absolute;
+        top: 42px;
+        left: 80px;
         display: inline-flex;
         align-items: center;
-        gap: 9px;
-        color: var(--ink-2);
-        font-weight: 500;
-        font-size: 17px;
+        gap: 10px;
+        font-family: var(--mono);
+        font-size: 18px;
+        color: var(--ink-3);
+        letter-spacing: 0.01em;
       }
-      .panel-home .dot {
+      .wordmark .dot {
         width: 8px;
         height: 8px;
         border-radius: 50%;
         background: var(--accent);
-        box-shadow: 0 0 9px var(--accent-glow);
-      }
-      .panel-tray {
-        display: inline-flex;
-        align-items: center;
-        gap: 12px;
-        color: var(--ink-3);
-        font-size: 16px;
-        letter-spacing: 0.02em;
-      }
-      .panel-tray .sep { color: var(--ink-5); }
-
-      /* Desktop work area --------------------------------------- */
-      .desktop {
-        flex: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 22px 0 104px;
+        box-shadow: 0 0 10px rgba(23, 147, 209, 0.7);
       }
 
-      /* Window --------------------------------------------------- */
-      .window {
-        width: 1040px;
-        background: var(--bg);
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
-        overflow: hidden;
+      .stage {
+        position: absolute;
+        left: 80px;
+        top: 50%;
+        transform: translateY(-50%);
+        max-width: 640px;
       }
-      .window-bar {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        height: 48px;
-        padding: 0 18px;
-        background: var(--surface-2);
-        border-bottom: 1px solid var(--line);
-      }
-      .controls { display: inline-flex; align-items: center; gap: 9px; }
-      .controls span { width: 13px; height: 13px; border-radius: 50%; display: inline-block; }
-      .controls .close { background: #e0564f; }
-      .controls .ctl { background: var(--surface-3); }
-      .window-title { color: var(--ink-2); font-weight: 500; font-size: 16px; }
-      .window-title .seg { color: var(--ink-5); }
-
-      .window-body {
-        display: flex;
-        align-items: center;
-        gap: 44px;
-        padding: 44px 48px;
-      }
-
-      /* Identity ------------------------------------------------- */
-      .id { flex: 1; min-width: 0; }
-      .id h1 {
-        font-size: 76px;
+      .name {
+        font-size: 78px;
         font-weight: 700;
         line-height: 1.0;
         letter-spacing: -0.02em;
         color: var(--ink);
       }
-      .id .sub {
-        font-family: var(--mono);
-        font-size: 20px;
-        color: var(--ink-5);
-        margin-top: 14px;
-      }
-      .id .tag {
-        font-size: 27px;
-        line-height: 1.32;
-        color: var(--ink-2);
-        margin-top: 40px;
-        max-width: 480px;
-      }
-
-      /* Ledger --------------------------------------------------- */
-      .ledger {
-        flex-shrink: 0;
-        width: 360px;
-        background: var(--surface-2);
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        padding: 24px 28px 26px;
-      }
-      .ledger .prompt {
-        font-family: var(--mono);
-        font-size: 14px;
-        color: var(--ink-5);
-        margin-bottom: 18px;
-      }
-      .ledger .row {
-        display: flex;
+      .role {
         font-family: var(--mono);
         font-size: 21px;
-        line-height: 1.9;
+        color: var(--ink-5);
+        margin-top: 16px;
       }
-      .ledger .row .k { width: 116px; color: var(--ink-3); }
-      .ledger .row .v { color: var(--accent-2); }
-
-      /* Dock ----------------------------------------------------- */
-      .dock {
-        position: absolute;
-        bottom: 18px;
-        left: 50%;
-        transform: translateX(-50%);
-        display: flex;
-        align-items: flex-end;
-        gap: 12px;
-        padding: 9px 13px;
-        background: rgba(17, 21, 28, 0.82);
-        border: 1px solid var(--line);
-        border-radius: 18px;
-      }
-      .app { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 54px; }
-      .app .icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 13px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--surface-3);
-        border: 1px solid var(--line);
+      .tagline {
+        font-size: 28px;
+        line-height: 1.36;
         color: var(--ink-3);
+        margin-top: 36px;
+        max-width: 580px;
       }
-      .app .icon svg { width: 23px; height: 23px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-      .app .label { font-family: var(--mono); font-size: 11px; color: var(--ink-5); }
-      .app.active .icon { color: var(--accent-2); border-color: var(--accent-line); background: var(--accent-soft); }
-      .app.active .label { color: var(--accent-2); }
+      .tagline span { color: var(--accent-2); }
+      .meta {
+        font-family: var(--mono);
+        font-size: 17px;
+        color: var(--ink-5);
+        margin-top: 34px;
+        letter-spacing: 0.01em;
+      }
     </style>
   </head>
   <body>
-    <header class="panel">
-      <span class="panel-home"><span class="dot"></span><span>jcrenshaw.dev</span></span>
-      <span class="panel-tray"><span>john</span><span class="sep">·</span><span>software engineer</span></span>
-    </header>
-
-    <main class="desktop">
-      <section class="window">
-        <div class="window-bar">
-          <span class="controls"><span class="close"></span><span class="ctl"></span><span class="ctl"></span></span>
-          <span class="window-title"><span class="seg">~ / code / </span>tempest</span>
-        </div>
-        <div class="window-body">
-          <div class="id">
-            <h1>Tempest</h1>
-            <div class="sub">weather for the COSMIC desktop</div>
-            <div class="tag">Current conditions, forecasts, alerts, and air quality in the panel. No account, no API key.</div>
-          </div>
-          <div class="ledger">
-            <div class="prompt">john@cosmic ~</div>
-            <div class="row"><span class="k">status:</span><span class="v">live</span></div>
-            <div class="row"><span class="k">version:</span><span class="v">{{TEMPEST_VERSION}}</span></div>
-            <div class="row"><span class="k">license:</span><span class="v">gpl-3.0</span></div>
-            <div class="row"><span class="k">install:</span><span class="v">aur · flatpak</span></div>
-            <div class="row"><span class="k">panel:</span><span class="v">cosmic</span></div>
-            <div class="row"><span class="k">data:</span><span class="v">weathervane</span></div>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <nav class="dock">
-      <span class="app">
-        <span class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.4"></circle><path d="M5.5 19.5c0-3.7 3-5.6 6.5-5.6s6.5 1.9 6.5 5.6"></path></svg></span>
-        <span class="label">About</span>
-      </span>
-      <span class="app active">
-        <span class="icon"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.4"></rect><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.4"></rect><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.4"></rect><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.4"></rect></svg></span>
-        <span class="label">Code</span>
-      </span>
-      <span class="app">
-        <span class="icon"><svg viewBox="0 0 24 24"><path d="M7 3.5h7l4 4V20.5H7z"></path><path d="M14 3.5V8h4"></path><path d="M9.5 12.5h7M9.5 15.5h5"></path></svg></span>
-        <span class="label">Writing</span>
-      </span>
-      <span class="app">
-        <span class="icon"><svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="12" rx="2.2"></rect><path d="M4.2 7.5l7.8 5.6 7.8-5.6"></path></svg></span>
-        <span class="label">Contact</span>
-      </span>
-    </nav>
+    <span class="wordmark"><span class="dot"></span>jcrenshaw.dev</span>
+    <div class="stage">
+      <div class="name">tempest</div>
+      <div class="role">weather for the COSMIC desktop</div>
+      <p class="tagline">Current conditions, forecasts, alerts, and air quality, right in the panel. <span>No account, no API key.</span></p>
+      <div class="meta">v{{TEMPEST_VERSION}} &nbsp;·&nbsp; Rust &nbsp;·&nbsp; self-distributed</div>
+    </div>
   </body>
 </html>
