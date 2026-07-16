@@ -12,12 +12,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 >
   <div class="room-head">
     <h1 class="room-title">weathervane</h1>
-    <p class="room-lead">Weather, air quality, and alerts from public APIs — as clean Rust types. The engine behind Tempest, pulled into a crate.</p>
+    <p class="room-lead">Weather, air quality, and alerts from public APIs, as clean Rust types. The engine behind Tempest, pulled into a crate.</p>
   </div>
 
   <div class="badges">
     <span class="badge">Rust</span>
-    <span class="badge">v0.5.0</span>
+    <span class="badge">v0.10.0</span>
     <span class="badge">MIT / Apache-2.0</span>
     <span class="badge">crates.io</span>
     <span class="badge">docs.rs</span>
@@ -26,7 +26,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
   <div class="prose">
     <p>You call the async functions, you get back clean Rust types. That's it. Weathervane fetches the data, parses the responses, handles unit conversions, and gets out of the way. No UI dependencies. No polling. No timers. No config storage. The frontend owns all of that.</p>
 
-    <p>Open-Meteo by default, no key required. Inside Japan it swaps the current temperature for the nearest JMA AMeDAS station, because Open-Meteo runs a few degrees cold there. Air quality can use a free aqicn.org token outside Europe; pollutant concentrations always come from Open-Meteo so the µg/m³ contract stays honest. Pollen is Europe-only — six species, by way of CAMS.</p>
+    <p>Open-Meteo by default, no key required. Inside Japan it swaps the current temperature for the nearest JMA AMeDAS station, and inside the US it overlays live National Weather Service observations, because the blended model runs a few degrees off ground truth in both. Air quality can use a free aqicn.org token outside Europe; pollutant concentrations always come from Open-Meteo so the µg/m³ contract stays honest. Pollen is Europe-only, six species by way of CAMS.</p>
+
+    <p>Alerts come from whichever national service covers the coordinates: NWS in the US, ECCC in Canada, MeteoAlarm across Europe, BOM in Australia. Four providers, normalized into a single Alert type. On Linux it also watches D-Bus and emits an event when connectivity returns or the machine resumes from suspend, degrading quietly everywhere else.</p>
 
     <p>It came out of Tempest in 2.6.0: roughly 1,700 lines moved out of the applet tree so the data layer could stand on its own and be tested without a GUI attached.</p>
 
