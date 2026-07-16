@@ -193,4 +193,13 @@ DefaultBranch=stable
 GPGKey=${store_pub_b64}
 EOF
 
+# Self-check the descriptor users actually consume: its embedded GPGKey must
+# decode to the store key that signed the repo. The build-time verify-flatpak
+# stage adds the repo root over file:// (the descriptor's Url is the production
+# origin, unreachable during the build), so without this a byte-mangled export
+# or wrong-key GPGKey would ship silently and every user's remote-add would fail.
+sed -n 's/^GPGKey=//p' "$fp/jcrenshaw.flatpakrepo" | base64 -d \
+  | gpg --show-keys --with-colons 2>/dev/null | grep -q "$GPG_KEY" \
+  || { echo "FATAL: jcrenshaw.flatpakrepo GPGKey does not decode to $GPG_KEY" >&2; exit 1; }
+
 echo "Done. APT: ${BASE_URL}/deb (${CODENAME} main)  RPM: ${BASE_URL}/rpm  Flatpak: ${BASE_URL}/flatpak"
