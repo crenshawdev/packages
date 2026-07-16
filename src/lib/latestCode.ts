@@ -4,7 +4,7 @@
 // result is cached with a TTL and re-fetched once it expires, rather than
 // memoized forever, keeping the shown version fresh without a redeploy.
 
-const TAGS_URL = 'https://api.github.com/repos/crenshawdev/tempest/tags?per_page=1';
+const TAGS_URL = 'https://api.github.com/repos/crenshawdev/weathervane/tags?per_page=1';
 
 // Re-fetch at most once per TTL window under the long-lived SSR server.
 const TTL_MS = 600000; // 10 minutes
@@ -15,7 +15,7 @@ export interface LatestCode {
   live: boolean; // true when fetched, false when the fallback was used
 }
 
-const FALLBACK: LatestCode = { version: 'v2.11.0', released: null, live: false };
+const FALLBACK: LatestCode = { version: 'v0.9.1', released: null, live: false };
 
 const HEADERS = {
   'User-Agent': 'jcrenshaw.dev build',

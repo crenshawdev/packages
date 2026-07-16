@@ -25,15 +25,15 @@ const dateFmt = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric
 const latestDate = dateFmt.format(latest.publishedAt);
 const latestHref = `${base}/posts/${latest.slug}`;
 
-// Latest code — Tempest's version comes from the GitHub API at build time (curated fallback if offline).
+// Latest code — Weathervane's version comes from the GitHub API at build time (curated fallback if offline).
 const latestCode = await getLatestCode();
 const releaseDate = latestCode.released ? dateFmt.format(new Date(latestCode.released)) : null;
 const code = {
-  name: 'cosmic-ext-applet-tempest',
+  name: 'weathervane',
   lang: 'Rust',
   version: latestCode.version,
-  blurb: 'A weather applet for COSMIC: forecasts, alerts, and air quality with no account or API key.',
-  href: 'https://github.com/crenshawdev/tempest',
+  blurb: 'The data engine behind Tempest, extracted into a clean, tested Rust crate. Call the async functions, get typed weather, air quality, and alerts back. No UI, no timers, the frontend owns that.',
+  href: 'https://crates.io/crates/weathervane',
 };
 
 const markSrc = `${base}/favicon.svg`;
@@ -41,91 +41,31 @@ const markSrc = `${base}/favicon.svg`;
 
 <BaseLayout
   title="John Crenshaw"
-  description="The front door to John Crenshaw: retired engineer writing essays and building Rust tools for the Linux desktop."
+  description="John Crenshaw, software engineer. I help businesses make measured, justified decisions about what to build, what to leave alone, and where AI actually belongs."
 >
-  <script is:inline slot="head">
-    // Pre-paint: only the first visit (and not reduced-motion) gets the boot overlay.
-    // No JS or returning visitor -> overlay stays display:none, entry shows immediately.
-    try {
-      if (
-        !localStorage.getItem('jc_booted') &&
-        !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      ) {
-        document.documentElement.classList.add('booting');
-      }
-    } catch (e) {}
-  </script>
-
-  <div class="boot-overlay" aria-hidden="true" slot="overlay">
-    <div class="bl boot-dim" style="animation-delay:.06s">jcrenshaw.dev tty1</div>
-    <div class="bl" style="animation-delay:.11s">&nbsp;</div>
-    <div class="bl boot-dim" style="animation-delay:.17s">[    0.000018] Linux version 7.0.11-zen1-1-zen</div>
-    <div class="bl boot-dim" style="animation-delay:.23s">[    0.118003] Command line: ro quiet splash</div>
-    <div class="bl boot-dim" style="animation-delay:.29s">[    0.392104] Loading initial ramdisk ...</div>
-    <div class="bl boot-dim" style="animation-delay:.35s">[    0.661320] systemd 257 running in system mode</div>
-    <div class="bl" style="animation-delay:.41s"><span class="boot-ok">[  OK  ]</span> Reached target Local File Systems</div>
-    <div class="bl" style="animation-delay:.47s"><span class="boot-ok">[  OK  ]</span> Mounted /home/john</div>
-    <div class="bl" style="animation-delay:.53s"><span class="boot-ok">[  OK  ]</span> Started Network <span class="boot-dim">— github.com/crenshawdev</span></div>
-    <div class="bl" style="animation-delay:.59s"><span class="boot-ok">[  OK  ]</span> Loaded fonts <span class="boot-dim">— IBM Plex Mono / Sans</span></div>
-    <div class="bl" style="animation-delay:.65s"><span class="boot-ok">[  OK  ]</span> Applied theme <span class="boot-dim">— Deep Slate</span></div>
-    <div class="bl" style="animation-delay:.71s"><span class="boot-ok">[  OK  ]</span> Started about.service</div>
-    <div class="bl" style="animation-delay:.77s"><span class="boot-ok">[  OK  ]</span> Started writing.service <span class="boot-dim">— the blog</span></div>
-    <div class="bl" style="animation-delay:.83s"><span class="boot-ok">[  OK  ]</span> Started code.service <span class="boot-dim">— projects & repos</span></div>
-    <div class="bl" style="animation-delay:.89s"><span class="boot-ok">[  OK  ]</span> Started contact.service</div>
-    <div class="bl" style="animation-delay:.95s"><span class="boot-ok">[  OK  ]</span> Verified flatpak trust <span class="boot-dim">— single GPG root</span></div>
-    <div class="bl" style="animation-delay:1.01s"><span class="boot-ok">[  OK  ]</span> Reached target <span class="boot-ac">Front Door</span></div>
-    <div class="bl" style="animation-delay:1.07s">&nbsp;</div>
-    <div class="bl" style="animation-delay:1.13s"><span class="boot-dim">jcrenshaw login:</span> <span class="boot-user">john</span></div>
-    <div class="bl boot-user" style="animation-delay:1.20s">Welcome back, John.<span class="boot-cur"></span></div>
-    <div class="boot-skip">▸ press any key to skip</div>
-  </div>
-
   <main class="home">
     <h1 class="sr-only">John Crenshaw — essays and Rust tools for the Linux desktop</h1>
 
-    <!-- Identity band: hero copy + callsign card -->
+    <!-- Identity band -->
     <section class="top">
       <div class="hero-copy">
         <div class="hero-id">
           <img class="hero-mark" src={markSrc} alt="" width="64" height="64" />
           <div>
             <div class="hero-name">John Crenshaw</div>
-            <div class="hero-role">software engineer, ret.</div>
+            <div class="hero-role">software engineer</div>
           </div>
         </div>
-        <p class="tagline">I write essays <span>and build Rust tools for the Linux desktop.</span></p>
-        <p class="bio">I built other people's software since the 80s. Payment rails moving debit, credit, and ACH. HIPAA data mining. Retinal biometric access for the DoD. EPROM tooling against Intel silicon that hadn't shipped yet. The backend systems you never see. Retired now. These days I build my own, in Rust, for the Linux desktop I actually run.</p>
+        <p class="tagline">I build software for people who want it <span>done right, not just done.</span></p>
+        <p class="bio">For a career I built other people's systems under other people's constraints. At Salesforce, a multi-threaded C# service I designed carried Marketing Cloud's SMS over SMPP at platform scale, and healed itself off metrics I championed and designed, and recovery steps I learned from watching it get fixed by hand. Now the call is mine. I help businesses make measured, justified decisions about what to build and what to leave alone, including where AI earns its place and where it doesn't. The right tool for the job, and nothing you don't need.</p>
       </div>
-      <aside class="card callsign-card">
-        <div class="callsign">
-          <span class="mark" aria-hidden="true"><img src={markSrc} alt="" width="54" height="54" /></span>
-          <div class="nf">
-            <div class="nf-host">john@jcrenshaw</div>
-            <div class="nf-sep">───────────</div>
-            <div class="nf-row"><span class="k">host</span><span class="v">Chicago</span></div>
-            <div class="nf-row"><span class="k">uptime</span><span class="v">since 1956</span></div>
-            <div class="nf-row"><span class="k">os</span><span class="v">arch · zen</span></div>
-            <div class="nf-row"><span class="k">shell</span><span class="v">rust · c</span></div>
-            <div class="nf-row"><span class="k">status</span><span class="v">retired</span></div>
-            <div class="nf-row"><span class="k">wm</span><span class="v">cosmic</span></div>
-            <div class="nf-swatch" aria-hidden="true">
-              <i style="background:#e40303"></i>
-              <i style="background:#ff8c00"></i>
-              <i style="background:#ffed00"></i>
-              <i style="background:#008026"></i>
-              <i style="background:#004dff"></i>
-              <i style="background:#750787"></i>
-            </div>
-          </div>
-        </div>
-      </aside>
     </section>
 
-    <!-- One hand: the differentiator made visible -->
+    <!-- Proof: the writing and tools as evidence the judgment ships -->
     <section class="onehand">
-      <p class="kicker">one hand</p>
-      <h2>The writing and the tools come from the same desk.</h2>
-      <p class="onehand-lead">The tools prove the essays, the essays explain the tools.</p>
+      <p class="kicker">the proof</p>
+      <h2>Don't take my word for it.</h2>
+      <p class="onehand-lead">The essays show how I think. The tools show it ships. Both public, both current.</p>
       <div class="desk">
         <article class="card">
           <p class="card-label">Writing</p>
@@ -144,11 +84,11 @@ const markSrc = `${base}/favicon.svg`;
           <div class="badges">
             <span class="badge">{code.lang}</span>
             <span class="badge">{code.version}</span>
-            <span class="badge">Flatpak</span>
+            <span class="badge">crates.io</span>
           </div>
           {releaseDate && <p class="essay-meta">Latest release · {releaseDate}</p>}
           <p class="essay-excerpt">{code.blurb}</p>
-          <a class="card-link" href={code.href}>Get it on GitHub ↗</a>
+          <a class="card-link" href={code.href}>Get it on crates.io ↗</a>
         </article>
       </div>
     </section>
@@ -158,30 +98,6 @@ const markSrc = `${base}/favicon.svg`;
       <a class="ghost" href={code.href}>Browse the code on GitHub ↗</a>
     </section>
   </main>
-
-  <script is:inline>
-    (function () {
-      var html = document.documentElement;
-      if (!html.classList.contains('booting')) return;
-      var overlay = document.querySelector('.boot-overlay');
-      var done = false;
-      function end() {
-        if (done) return;
-        done = true;
-        window.removeEventListener('keydown', end);
-        window.removeEventListener('pointerdown', end);
-        if (overlay) overlay.classList.add('boot-done');
-        try { localStorage.setItem('jc_booted', '1'); } catch (e) {}
-        setTimeout(function () {
-          html.classList.remove('booting');
-          if (overlay && overlay.parentNode) overlay.parentNode.removeChild(overlay);
-        }, 460);
-      }
-      setTimeout(end, 1950);
-      window.addEventListener('keydown', end);
-      window.addEventListener('pointerdown', end);
-    })();
-  </script>
 
   <style>
     .home {
@@ -206,18 +122,15 @@ const markSrc = `${base}/favicon.svg`;
       margin: 0 0 16px;
     }
 
-    /* Identity band: hero copy + callsign card */
-    .top { display: grid; grid-template-columns: 1fr 264px; gap: 40px; align-items: start; padding-top: 8px; }
+    /* Identity band */
+    .top { padding-top: 8px; }
     .hero-id { display: flex; align-items: center; gap: 20px; margin-bottom: 26px; }
     .hero-mark { width: 64px; height: 64px; flex-shrink: 0; border-radius: 14px; }
     .hero-name { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); line-height: 1.1; }
     .hero-role { font-family: var(--mono); font-size: 13px; color: var(--ink-4); margin-top: 4px; }
-    .tagline { font-size: 27px; font-weight: 400; color: var(--ink); max-width: 20ch; line-height: 1.26; margin: 0 0 20px; }
+    .tagline { font-size: 30px; font-weight: 400; color: var(--ink); line-height: 1.26; margin: 0 0 22px; }
     .tagline span { color: var(--accent-2); font-weight: 500; }
-    .bio { max-width: 52ch; font-size: 16px; color: var(--ink-3); margin: 0; }
-    .callsign-card { align-self: start; }
-    .callsign .mark { width: 54px; height: 54px; flex-shrink: 0; }
-    .callsign .mark img { width: 100%; height: 100%; display: block; border-radius: 13px; }
+    .bio { font-size: 16px; color: var(--ink-3); margin: 0; }
 
     /* One hand */
     .onehand h2 { font-size: 23px; font-weight: 600; color: var(--ink); margin: 0 0 8px; line-height: 1.25; }
@@ -235,7 +148,7 @@ const markSrc = `${base}/favicon.svg`;
     .ghost:hover { background: var(--accent-soft); color: var(--ink); }
 
     @media (max-width: 720px) {
-      .top, .desk { grid-template-columns: 1fr; }
+      .desk { grid-template-columns: 1fr; }
       .tagline { font-size: 25px; }
       .hero-name { font-size: 26px; }
     }
