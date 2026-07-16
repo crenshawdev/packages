@@ -36,6 +36,45 @@ async function resolveTempestVersion() {
 
 const tempestVersion = await resolveTempestVersion();
 
+// Resolve the live weathervane release from crates.io so the card version
+// tracks the published crate at render time. Curated fallback on failure.
+const CRATES_URL = 'https://crates.io/api/v1/crates/weathervane';
+const WEATHERVANE_FALLBACK = '0.10.0';
+
+async function resolveWeathervaneVersion() {
+  try {
+    const res = await fetch(CRATES_URL, {
+      headers: { 'User-Agent': 'jcrenshaw.dev build', Accept: 'application/json' },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) throw new Error(`crates.io ${res.status}`);
+    const data = await res.json();
+    const version = data?.crate?.max_stable_version;
+    if (!version) throw new Error('no version returned');
+    return String(version);
+  } catch (err) {
+    console.warn('[render-og] weathervane version fallback:', err.message);
+    return WEATHERVANE_FALLBACK;
+  }
+}
+
+const weathervaneVersion = await resolveWeathervaneVersion();
+
+// Inline the generated card art as a data URI so page.setContent (which has no
+// base URL for relative paths) can render it. Falls back to an empty string so
+// the body's background-color/gradient still yields a dark card if it is absent.
+async function resolveCardBg() {
+  try {
+    const raw = await readFile(resolve(here, 'art', 'card-bg.png'));
+    return `data:image/png;base64,${raw.toString('base64')}`;
+  } catch (err) {
+    console.warn('[render-og] card-bg fallback:', err.message);
+    return '';
+  }
+}
+
+const cardBg = await resolveCardBg();
+
 // Each card is a self-contained HTML file rendered to an image under public/.
 const CARDS = [
   { html: 'og-card.html', out: 'og-image.png' },
@@ -57,7 +96,10 @@ for (const card of cards) {
     deviceScaleFactor: 1, // exact 1200x630 to match og:image:width/height meta
   });
   const raw = await readFile(resolve(here, card.html), 'utf8');
-  const html = raw.replaceAll('{{TEMPEST_VERSION}}', tempestVersion);
+  const html = raw
+    .replaceAll('{{TEMPEST_VERSION}}', tempestVersion)
+    .replaceAll('{{WEATHERVANE_VERSION}}', weathervaneVersion)
+    .replaceAll('{{CARD_BG}}', cardBg);
   await page.setContent(html, { waitUntil: 'networkidle' });
   await page.evaluate(() => document.fonts.ready);
   await page.waitForTimeout(150);

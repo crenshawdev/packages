@@ -237,6 +237,12 @@ a:hover { color: var(--ink); }
   color: var(--ink-5);
   transition: color 0.16s ease;
 }
+.dock-app.cta {
+  width: auto;
+}
+.dock-app.cta .label {
+  white-space: nowrap;
+}
 .dock-app:hover .icon {
   transform: translateY(-5px);
   background: #222c3a;
