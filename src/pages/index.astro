@@ -25,15 +25,15 @@ const dateFmt = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric
 const latestDate = dateFmt.format(latest.publishedAt);
 const latestHref = `${base}/posts/${latest.slug}`;
 
-// Latest code — Tempest's version comes from the GitHub API at build time (curated fallback if offline).
+// Latest code — Weathervane's version comes from the GitHub API at build time (curated fallback if offline).
 const latestCode = await getLatestCode();
 const releaseDate = latestCode.released ? dateFmt.format(new Date(latestCode.released)) : null;
 const code = {
-  name: 'cosmic-ext-applet-tempest',
+  name: 'weathervane',
   lang: 'Rust',
   version: latestCode.version,
-  blurb: 'A weather applet for COSMIC: forecasts, alerts, and air quality with no account or API key.',
-  href: 'https://github.com/crenshawdev/tempest',
+  blurb: 'The data engine behind Tempest, extracted into a clean, tested Rust crate. Call the async functions, get typed weather, air quality, and alerts back. No UI, no timers, the frontend owns that.',
+  href: 'https://crates.io/crates/weathervane',
 };
 
 const markSrc = `${base}/favicon.svg`;
@@ -84,11 +84,11 @@ const markSrc = `${base}/favicon.svg`;
           <div class="badges">
             <span class="badge">{code.lang}</span>
             <span class="badge">{code.version}</span>
-            <span class="badge">Flatpak</span>
+            <span class="badge">crates.io</span>
           </div>
           {releaseDate && <p class="essay-meta">Latest release · {releaseDate}</p>}
           <p class="essay-excerpt">{code.blurb}</p>
-          <a class="card-link" href={code.href}>Get it on GitHub ↗</a>
+          <a class="card-link" href={code.href}>Get it on crates.io ↗</a>
         </article>
       </div>
     </section>
