@@ -22,9 +22,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </p>
     <p>
       On top of Proxmox it's a stack of unprivileged LXC containers, one service to a container,
-      so a mess in any one of them stays in that one. No cloud bill, no someone-else's-platform,
-      no telemetry I didn't turn on myself. When it goes sideways at 2am the person who fixes it
-      is me, which is the entire point.
+      so a mess in any one of them stays in that one. Everything on it is self-hosted and mine,
+      with no telemetry I didn't turn on myself. When it goes sideways at 2am the person who fixes
+      it is me, which is the entire point.
     </p>
 
     <h3>What it runs</h3>
@@ -53,6 +53,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <strong>Not losing it.</strong> Proxmox Backup Server takes deduplicated snapshots onto a
       ZFS pool, and an offsite copy goes out from there. Backups you have never restored are a
       rumor, so that path gets tested, not assumed.
+    </p>
+    <p>
+      <strong>Not here on purpose.</strong> This website. Anything the public can reach runs on
+      droplets, kept off the home network by design, so the open internet never has a route back
+      to the machine my actual life runs on.
     </p>
 
     <h3>The desktop</h3>
