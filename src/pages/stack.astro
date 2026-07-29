@@ -4,20 +4,78 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout
   title="Stack"
-  description="The homelab, the home network, the desktop, and the tools John Crenshaw actually runs."
+  description="One headless laptop, lid closed, running the whole homelab on Proxmox and a pile of unprivileged containers. Self-hosted and self-reliant."
   windowTitle="Stack"
   active="stack"
 >
   <div class="room-head">
     <h1 class="room-title">The Stack</h1>
-    <p class="room-lead">The homelab, the network, the desktop, and the tools I actually run.</p>
+    <p class="room-lead">One laptop, lid closed, doing the work of a rack.</p>
   </div>
 
   <div class="prose">
     <p>
-      This room is coming together — the Proxmox host and what it runs, how the home network is
-      laid out, the Hyprland + Noctalia desktop, and the small pile of tools I reach for daily.
-      Self-hosted, self-reliant, and documented here for anyone who wants to steal a good idea.
+      The whole homelab runs on a single System76 laptop named minas-tirith, lid shut, tucked on
+      a shelf. Its battery is the UPS. It's a 24-core i9 with 62 gigs of RAM that spends most of
+      its life bored, load hovering around a quarter of one core, because the job was never
+      horsepower. The job is staying up, and staying mine.
+    </p>
+    <p>
+      On top of Proxmox it's a stack of unprivileged LXC containers, one service to a container,
+      so a mess in any one of them stays in that one. No cloud bill, no someone-else's-platform,
+      no telemetry I didn't turn on myself. When it goes sideways at 2am the person who fixes it
+      is me, which is the entire point.
+    </p>
+
+    <h3>What it runs</h3>
+    <p>
+      <strong>Networking and access.</strong> Technitium handles DNS and DHCP for the house.
+      Caddy sits out front with a wildcard certificate, Authelia guards the things worth guarding
+      with single sign-on and a TOTP prompt, and a Cloudflare tunnel exposes only the handful of
+      services that are meant to face outward.
+    </p>
+    <p>
+      <strong>Watching it.</strong> Grafana, Loki, and Prometheus for the metrics and logs,
+      Beszel and Uptime Kuma for the at-a-glance "is it alive," and NetAlertX keeping an inventory
+      of everything on the network so a new MAC address doesn't go unnoticed.
+    </p>
+    <p>
+      <strong>Keeping it honest.</strong> A Wazuh SIEM chews through the logs, CrowdSec turns
+      away the obvious junk at the edge, and a honeypot or two that page me the moment anything on the
+      LAN touches something it has no business touching.
+    </p>
+    <p>
+      <strong>The useful stuff.</strong> A Matrix server for chat that's actually mine, Forgejo
+      for git, and ntfy as the single sink every other service shouts into when it needs my
+      attention.
+    </p>
+    <p>
+      <strong>Not losing it.</strong> Proxmox Backup Server takes deduplicated snapshots onto a
+      ZFS pool, and an offsite copy goes out from there. Backups you have never restored are a
+      rumor, so that path gets tested, not assumed.
+    </p>
+
+    <h3>The desktop</h3>
+    <p>
+      The machine I actually sit at runs CachyOS, a performance-tuned Arch, under Hyprland with
+      the Noctalia shell stretched across an ultrawide. If the front door of this site feels
+      familiar, that's why: it's dressed as the desktop I'm typing this on.
+    </p>
+    <p>
+      <strong>Where the work happens.</strong> Mostly the terminal, I'm a terminal guy through
+      and through: Ghostty with zsh underneath and nano for quick edits. JetBrains Rider when it's
+      C#, which it often still is, and VSCodium with the Microsoft telemetry filed off when a GUI
+      editor actually earns it.
+    </p>
+    <p>
+      <strong>Where AI earns its keep.</strong> Claude Code does the heavy lifting I point it at,
+      kept on rails by Cadence for planning and Hindsight for memory that survives between
+      sessions. Useful exactly where it's useful, which is the whole argument I make about the
+      stuff.
+    </p>
+    <p>
+      <strong>Staying in touch.</strong> The same Matrix server that runs the house is where my
+      family talks, so the group chat isn't a product someone else gets to mine.
     </p>
   </div>
 </BaseLayout>
