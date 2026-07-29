@@ -1,7 +1,7 @@
 ---
 import { ROOMS } from '../lib/rooms';
 import type { RoomId } from '../lib/rooms';
-import type { WeatherSnapshot } from '../lib/weather';
+import type { WeatherSnapshot, WeatherKind } from '../lib/weather';
 
 interface Props {
   base?: string;
@@ -13,6 +13,18 @@ interface Props {
 }
 const { base = '', clock, dateShort, active, weather, build } = Astro.props;
 const homeActive = !active;
+
+// Icon matches the actual conditions so a sun never sits next to "Rain".
+const wxIcon: Record<WeatherKind, string> = {
+  clear: '<circle cx="12" cy="12" r="4.3"/><path d="M12 2.6v2.1M12 19.3v2.1M2.6 12h2.1M19.3 12h2.1M5.3 5.3l1.5 1.5M17.2 17.2l1.5 1.5M18.7 5.3l-1.5 1.5M6.8 17.2l-1.5 1.5"/>',
+  partly: '<circle cx="8.5" cy="7.8" r="2.8"/><path d="M8.5 3v1.4M3 7.8h1.4M4.6 4.6l1 1"/><path d="M9 18.3h7.4a3.1 3.1 0 0 0 .2-6.2 4.3 4.3 0 0 0-8-1.3A3.3 3.3 0 0 0 9 18.3z"/>',
+  cloud: '<path d="M7.5 18h8.8a3.5 3.5 0 0 0 .3-7 5 5 0 0 0-9.5-1.4A3.8 3.8 0 0 0 7.5 18z"/>',
+  fog: '<path d="M8 12.5h8.3a3.2 3.2 0 0 0 .2-6.4 4.5 4.5 0 0 0-8.5-1.3A3.5 3.5 0 0 0 8 12.5z"/><path d="M5.5 16h13M7 19h10"/>',
+  rain: '<path d="M8 13.5h8.3a3.4 3.4 0 0 0 .2-6.8 4.6 4.6 0 0 0-8.7-1.3A3.6 3.6 0 0 0 8 13.5z"/><path d="M9 16.5l-1 2.5M13 16.5l-1 2.5M17 16.5l-1 2.5"/>',
+  snow: '<path d="M8 13.5h8.3a3.4 3.4 0 0 0 .2-6.8 4.6 4.6 0 0 0-8.7-1.3A3.6 3.6 0 0 0 8 13.5z"/><path d="M9.5 17.5h.01M13 18.5h.01M16 17.5h.01"/>',
+  storm: '<path d="M8 13h8.3a3.4 3.4 0 0 0 .2-6.8 4.6 4.6 0 0 0-8.7-1.3A3.6 3.6 0 0 0 8 13z"/><path d="M12.5 15.5l-2 3h3l-2 3"/>',
+};
+const weatherSvg = wxIcon[weather.kind] ?? wxIcon.clear;
 ---
 
 <header class="bar">
@@ -41,7 +53,7 @@ const homeActive = !active;
     <time id="panel-clock" class="clock" datetime={clock}>{clock}</time>
     <span class="bar-date" aria-hidden="true">{dateShort}</span>
     <span class="wx" aria-label={`Weather: ${weather.tempF} degrees, ${weather.summary}`}>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"></path></svg>
+      <svg viewBox="0 0 24 24" aria-hidden="true" set:html={weatherSvg}></svg>
       {weather.tempF}&deg;F {weather.summary}
     </span>
   </div>

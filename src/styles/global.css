@@ -193,7 +193,7 @@ a:hover { color: var(--ink); }
 .bar-center .clock { color: var(--ink-2); letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
 .bar-center .bar-date { color: var(--ink-4); }
 .wx { display: inline-flex; align-items: center; gap: 7px; color: var(--ink-2); }
-.wx svg { width: 15px; height: 15px; fill: none; stroke: #e6b877; stroke-width: 1.6; }
+.wx svg { width: 15px; height: 15px; fill: none; stroke: #e6b877; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 
 .bar-right { display: inline-flex; align-items: center; gap: 12px; }
 .build { color: var(--ink-4); letter-spacing: 0.02em; }
