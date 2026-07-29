@@ -1,25 +1,73 @@
 ---
+import { ROOMS } from '../lib/rooms';
+import type { RoomId } from '../lib/rooms';
+import type { WeatherSnapshot, WeatherKind } from '../lib/weather';
+
 interface Props {
   base?: string;
   clock: string;
+  dateShort: string;
+  active?: RoomId;
+  weather: WeatherSnapshot;
+  build: string;
 }
-const { base = '', clock } = Astro.props;
+const { base = '', clock, dateShort, active, weather, build } = Astro.props;
+const homeActive = !active;
+
+// Icon matches the actual conditions so a sun never sits next to "Rain".
+const wxIcon: Record<WeatherKind, string> = {
+  clear: '<circle cx="12" cy="12" r="4.3"/><path d="M12 2.6v2.1M12 19.3v2.1M2.6 12h2.1M19.3 12h2.1M5.3 5.3l1.5 1.5M17.2 17.2l1.5 1.5M18.7 5.3l-1.5 1.5M6.8 17.2l-1.5 1.5"/>',
+  partly: '<circle cx="8.5" cy="7.8" r="2.8"/><path d="M8.5 3v1.4M3 7.8h1.4M4.6 4.6l1 1"/><path d="M9 18.3h7.4a3.1 3.1 0 0 0 .2-6.2 4.3 4.3 0 0 0-8-1.3A3.3 3.3 0 0 0 9 18.3z"/>',
+  cloud: '<path d="M7.5 18h8.8a3.5 3.5 0 0 0 .3-7 5 5 0 0 0-9.5-1.4A3.8 3.8 0 0 0 7.5 18z"/>',
+  fog: '<path d="M8 12.5h8.3a3.2 3.2 0 0 0 .2-6.4 4.5 4.5 0 0 0-8.5-1.3A3.5 3.5 0 0 0 8 12.5z"/><path d="M5.5 16h13M7 19h10"/>',
+  rain: '<path d="M8 13.5h8.3a3.4 3.4 0 0 0 .2-6.8 4.6 4.6 0 0 0-8.7-1.3A3.6 3.6 0 0 0 8 13.5z"/><path d="M9 16.5l-1 2.5M13 16.5l-1 2.5M17 16.5l-1 2.5"/>',
+  snow: '<path d="M8 13.5h8.3a3.4 3.4 0 0 0 .2-6.8 4.6 4.6 0 0 0-8.7-1.3A3.6 3.6 0 0 0 8 13.5z"/><path d="M9.5 17.5h.01M13 18.5h.01M16 17.5h.01"/>',
+  storm: '<path d="M8 13h8.3a3.4 3.4 0 0 0 .2-6.8 4.6 4.6 0 0 0-8.7-1.3A3.6 3.6 0 0 0 8 13z"/><path d="M12.5 15.5l-2 3h3l-2 3"/>',
+};
+const weatherSvg = wxIcon[weather.kind] ?? wxIcon.clear;
 ---
 
-<header class="panel" transition:persist>
-  <a class="panel-home" href={`${base}/`} aria-label="jcrenshaw.dev home">
-    <span class="dot" aria-hidden="true"></span>
-    <span>jcrenshaw.dev</span>
-  </a>
-  <div class="panel-tray">
-    <span>john</span>
-    <span class="sep" aria-hidden="true">·</span>
-    <time id="panel-clock" datetime={clock}>{clock}</time>
+<header class="bar">
+  <nav class="ws" aria-label="Rooms">
+    <a
+      class="w w-home"
+      href={`${base}/`}
+      aria-current={homeActive ? 'page' : undefined}
+      aria-label="Home"
+    >
+      <span class="dot" aria-hidden="true"></span><span class="w-home-label">home</span>
+    </a>
+    <span class="ws-sep" aria-hidden="true"></span>
+    {ROOMS.map((r) => (
+      <a
+        class="w"
+        href={`${base}${r.href}`}
+        aria-current={active === r.id ? 'page' : undefined}
+        aria-label={r.label}
+        title={r.label}
+      >{r.ws}</a>
+    ))}
+  </nav>
+
+  <div class="bar-center">
+    <time id="panel-clock" class="clock" datetime={clock}>{clock}</time>
+    <span class="bar-date" aria-hidden="true">{dateShort}</span>
+    <span class="wx" aria-label={`Weather: ${weather.tempF} degrees, ${weather.summary}`}>
+      <svg viewBox="0 0 24 24" aria-hidden="true" set:html={weatherSvg}></svg>
+      {weather.tempF}&deg;F {weather.summary}
+    </span>
+  </div>
+
+  <div class="bar-right">
+    <span class="build" title="site build">{build}</span>
+    <span class="power" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 3v9"></path><path d="M6.4 6.4a8 8 0 1 0 11.2 0"></path></svg>
+    </span>
   </div>
 </header>
 
 <script>
-  // Progressive enhancement: live-update the panel clock.
+  // Progressive enhancement: live-update the bar clock.
   // Server renders a static fallback so it is never blank without JS.
   const el = document.getElementById('panel-clock');
   if (el) {

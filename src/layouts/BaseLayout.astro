@@ -4,6 +4,10 @@ import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
 import Panel from '../components/Panel.astro';
 import Dock from '../components/Dock.astro';
+import { activeFromSeg } from '../lib/rooms';
+import type { RoomId } from '../lib/rooms';
+import { getWeatherSnapshot } from '../lib/weather';
+import { getBuildStamp } from '../lib/build';
 
 interface Props {
   title: string;
@@ -12,8 +16,8 @@ interface Props {
   windowTitle?: string;
   /** Optional dimmed path segment shown before the window title (e.g. "writing /"). */
   windowSeg?: string;
-  /** Which dock app is active. Inferred from the path when omitted. */
-  active?: 'about' | 'code' | 'writing';
+  /** Which room is active. Inferred from the path when omitted. */
+  active?: RoomId;
   /** Override the social card. Path under the site root incl. cache-bust query,
    *  e.g. "/tempest-og.png?v=2026-07". Defaults to the site-wide card. */
   ogImage?: string;
@@ -27,12 +31,7 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '') || '';
 const norm = Astro.url.pathname.replace(/\/$/, '') || '/';
 const stripBase = norm.startsWith(base) ? norm.slice(base.length) : norm;
 const seg = stripBase.replace(/^\//, '').split('/')[0] || '';
-let activeApp: Props['active'] = active;
-if (!activeApp) {
-  if (seg === 'about') activeApp = 'about';
-  else if (seg === 'code') activeApp = 'code';
-  else if (seg === 'writing' || seg === 'posts') activeApp = 'writing';
-}
+const activeApp: Props['active'] = active ?? activeFromSeg(seg);
 
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 // Bump ?v when the card art changes so Facebook/Mastodon re-fetch instead of
@@ -41,7 +40,11 @@ const ogImage = new URL(`${base}${ogImageProp ?? '/og-image.png?v=2026-07-16'}`,
 const ogDescription =
   description ?? 'Notes on Linux, Rust, and shipping software you actually understand, from an engineer who helps businesses build the right thing and skip the rest.';
 
-const clock = new Intl.DateTimeFormat([], { hour: 'numeric', minute: '2-digit' }).format(new Date());
+const now = new Date();
+const clock = new Intl.DateTimeFormat([], { hour: 'numeric', minute: '2-digit' }).format(now);
+const dateShort = new Intl.DateTimeFormat('en-US', { weekday: 'short', month: '2-digit', day: '2-digit' }).format(now);
+const weather = await getWeatherSnapshot();
+const build = getBuildStamp();
 ---
 
 <!doctype html>
@@ -81,7 +84,7 @@ const clock = new Intl.DateTimeFormat([], { hour: 'numeric', minute: '2-digit' }
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <div class="shell">
-      <Panel base={base} clock={clock} />
+      <Panel base={base} clock={clock} dateShort={dateShort} active={activeApp} weather={weather} build={build} />
 
       {windowTitle ? (
         <main class="desktop" id="main">
