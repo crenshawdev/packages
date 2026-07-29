@@ -1,25 +1,61 @@
 ---
+import { ROOMS } from '../lib/rooms';
+import type { RoomId } from '../lib/rooms';
+import type { WeatherSnapshot } from '../lib/weather';
+
 interface Props {
   base?: string;
   clock: string;
+  dateShort: string;
+  active?: RoomId;
+  weather: WeatherSnapshot;
+  build: string;
 }
-const { base = '', clock } = Astro.props;
+const { base = '', clock, dateShort, active, weather, build } = Astro.props;
+const homeActive = !active;
 ---
 
-<header class="panel" transition:persist>
-  <a class="panel-home" href={`${base}/`} aria-label="jcrenshaw.dev home">
-    <span class="dot" aria-hidden="true"></span>
-    <span>jcrenshaw.dev</span>
-  </a>
-  <div class="panel-tray">
-    <span>john</span>
-    <span class="sep" aria-hidden="true">·</span>
-    <time id="panel-clock" datetime={clock}>{clock}</time>
+<header class="bar">
+  <nav class="ws" aria-label="Rooms">
+    <a
+      class="w w-home"
+      href={`${base}/`}
+      aria-current={homeActive ? 'page' : undefined}
+      aria-label="Home"
+    >
+      <span class="dot" aria-hidden="true"></span><span class="w-home-label">home</span>
+    </a>
+    <span class="ws-sep" aria-hidden="true"></span>
+    {ROOMS.map((r) => (
+      <a
+        class="w"
+        href={`${base}${r.href}`}
+        aria-current={active === r.id ? 'page' : undefined}
+        aria-label={r.label}
+        title={r.label}
+      >{r.ws}</a>
+    ))}
+  </nav>
+
+  <div class="bar-center">
+    <time id="panel-clock" class="clock" datetime={clock}>{clock}</time>
+    <span class="bar-date" aria-hidden="true">{dateShort}</span>
+    <span class="wx" aria-label={`Weather: ${weather.tempF} degrees, ${weather.summary}`}>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"></path></svg>
+      {weather.tempF}&deg;F {weather.summary}
+    </span>
+  </div>
+
+  <div class="bar-right">
+    <span class="build" title="site build">{build}</span>
+    <span class="power" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 3v9"></path><path d="M6.4 6.4a8 8 0 1 0 11.2 0"></path></svg>
+    </span>
   </div>
 </header>
 
 <script>
-  // Progressive enhancement: live-update the panel clock.
+  // Progressive enhancement: live-update the bar clock.
   // Server renders a static fallback so it is never blank without JS.
   const el = document.getElementById('panel-clock');
   if (el) {

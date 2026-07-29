@@ -27,7 +27,7 @@ const readMin = (body: string) => Math.max(1, Math.round(body.trim().split(/\s+/
 <BaseLayout title="Writing" description="Essays by John Crenshaw." windowTitle="Writing" active="writing">
   <div class="idx-head">
     <h1 class="room-title">All writing</h1>
-    <span class="idx-count">{posts.length} entries · ~{wordsLabel} words</span>
+    <span class="idx-count">{posts.length} entries · ~{wordsLabel} words · <a href={`${base}/rss.xml`}>RSS</a></span>
   </div>
 
   {groups.map((g) => (

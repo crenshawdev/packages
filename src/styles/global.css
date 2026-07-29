@@ -33,7 +33,7 @@
   --mono: var(--font-ibm-plex-mono), ui-monospace, Menlo, Consolas, monospace;
 
   --measure: 65ch;
-  --panel-h: 38px;
+  --panel-h: 40px;
   --dock-h: 92px;
 
   /* z-scale */
@@ -131,8 +131,8 @@ a:hover { color: var(--ink); }
   overflow-x: hidden;
 }
 
-/* Panel ------------------------------------------------------ */
-.panel {
+/* Bar (Noctalia-style top bar) ------------------------------ */
+.bar {
   position: sticky;
   top: 0;
   z-index: var(--z-panel);
@@ -141,38 +141,64 @@ a:hover { color: var(--ink); }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 18px;
-  background: rgba(11, 14, 19, 0.7);
+  gap: 12px;
+  padding: 0 12px;
+  background: rgba(11, 14, 19, 0.82);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--line-soft);
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 13.5px;
   color: var(--ink-3);
 }
-.panel-home {
+
+/* Workspace rail = the rooms */
+.ws { display: inline-flex; align-items: center; gap: 3px; }
+.ws .w {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  color: var(--ink-2);
-  font-weight: 500;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 6px;
+  color: var(--ink-5);
+  font-size: 13px;
+  transition: color 0.15s ease, background 0.15s ease;
 }
-.panel-home .dot {
+.ws .w:hover { color: var(--ink-2); }
+.ws .w-home { gap: 6px; color: var(--ink-3); }
+.ws .w-home .dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
   background: var(--accent);
   box-shadow: 0 0 8px var(--accent-glow);
 }
-.panel-home:hover { color: var(--ink); }
-.panel-tray {
+.ws .w[aria-current='page'] {
+  color: var(--accent-2);
+  background: var(--accent-soft);
+  box-shadow: inset 0 0 0 1px var(--accent-line);
+}
+.ws-sep { width: 1px; height: 14px; background: var(--line); margin: 0 5px; }
+
+.bar-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: inline-flex;
   align-items: center;
   gap: 14px;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.02em;
 }
-.panel-tray .sep { color: var(--ink-5); }
+.bar-center .clock { color: var(--ink-2); letter-spacing: 0.02em; font-variant-numeric: tabular-nums; }
+.bar-center .bar-date { color: var(--ink-4); }
+.wx { display: inline-flex; align-items: center; gap: 7px; color: var(--ink-2); }
+.wx svg { width: 15px; height: 15px; fill: none; stroke: #e6b877; stroke-width: 1.6; }
+
+.bar-right { display: inline-flex; align-items: center; gap: 12px; }
+.build { color: var(--ink-4); letter-spacing: 0.02em; }
+.power { display: inline-flex; color: var(--ink-4); }
+.power svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.7; }
 
 /* Desktop work area ----------------------------------------- */
 .desktop {
@@ -184,7 +210,7 @@ a:hover { color: var(--ink); }
   padding-bottom: var(--dock-h);
 }
 
-/* Dock ------------------------------------------------------- */
+/* Dock (floating pill, icon-only) --------------------------- */
 .dock {
   position: fixed;
   bottom: 16px;
@@ -192,84 +218,140 @@ a:hover { color: var(--ink); }
   transform: translateX(-50%);
   z-index: var(--z-dock);
   display: flex;
-  align-items: flex-end;
-  gap: 10px;
-  padding: 9px 12px;
-  background: rgba(9, 12, 17, 0.74);
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: rgba(9, 12, 17, 0.8);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--line);
-  border-radius: 17px;
-  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.5);
+  border-radius: 16px;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55);
 }
 .dock-app {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  width: 50px;
-  color: var(--ink-3);
-}
-.dock-app .icon {
-  width: 46px;
-  height: 46px;
-  border-radius: 13px;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
   background: var(--surface-3);
   border: 1px solid var(--line);
   color: var(--ink-3);
   transition: transform 0.16s var(--ease-out), background 0.16s ease, color 0.16s ease;
 }
+.dock-app .icon { display: flex; align-items: center; justify-content: center; }
 .dock-app .icon svg {
-  width: 22px;
-  height: 22px;
+  width: 21px;
+  height: 21px;
   fill: none;
   stroke: currentColor;
   stroke-width: 1.6;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.dock-app .label {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--ink-5);
-  transition: color 0.16s ease;
-}
-.dock-app.cta {
-  width: auto;
-}
-.dock-app.cta .label {
-  white-space: nowrap;
-}
-.dock-app:hover .icon {
+.dock-app:hover,
+.dock-app:focus-visible {
   transform: translateY(-5px);
   background: #222c3a;
   color: var(--ink);
 }
-.dock-app:hover .label { color: var(--ink-3); }
-.dock-app {
-  position: relative;
-}
-.dock-app[aria-current='page'] .icon {
+.dock-app[aria-current='page'] {
   color: var(--accent-2);
   border-color: var(--accent-line);
   background: var(--accent-soft);
 }
-.dock-app[aria-current='page'] .label { color: var(--accent-2); }
-/* Non-color affordance for the active app: a small indicator dot,
-   so the current section reads without relying on hue alone. */
-.dock-app[aria-current='page']::after {
-  content: '';
+/* Name shows on hover/focus as a tooltip above the icon (desktop). */
+.dock-app::after {
+  content: attr(data-label);
   position: absolute;
-  bottom: -3px;
+  bottom: calc(100% + 8px);
   left: 50%;
-  transform: translateX(-50%);
-  width: 3px;
-  height: 3px;
+  transform: translateX(-50%) translateY(4px);
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(8, 11, 15, 0.95);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 10.5px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.14s ease, transform 0.14s var(--ease-out);
+}
+.dock-app:hover::after,
+.dock-app:focus-visible::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ============================================================
+   Front door (the desktop landing at /)
+   ============================================================ */
+
+.home {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+}
+.home-mark {
+  width: 60px;
+  height: 60px;
+  border-radius: 14px;
+  background: var(--surface-3);
+  border: 1px solid var(--line);
+  padding: 12px;
+  margin-bottom: 20px;
+}
+.home-name {
+  font-size: 31px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1.1;
+  margin: 0;
+}
+.home-line {
+  font-size: 18px;
+  color: var(--ink-3);
+  line-height: 1.5;
+  max-width: 48ch;
+  margin: 14px 0 0;
+}
+.home-line span { color: var(--ink); font-weight: 500; }
+.lately {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 32px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-4);
+}
+.lately .li { display: inline-flex; align-items: center; gap: 8px; }
+.lately .k { color: var(--ink-5); }
+.lately a { color: var(--ink-2); }
+.lately a:hover { color: var(--accent-2); }
+.lately .pulse {
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: var(--accent-2);
+  background: var(--live);
+  box-shadow: 0 0 7px rgba(62, 207, 142, 0.8);
+}
+.home-hint {
+  margin-top: 40px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--ink-5);
 }
 
 /* ============================================================
@@ -827,22 +909,28 @@ article.post h1 {
     padding: 18px 16px 12px;
   }
 
+  /* Bar: drop the numbered rail and right cluster, keep home + clock/weather. */
+  .ws .w:not(.w-home) { display: none; }
+  .ws-sep { display: none; }
+  .bar-right { display: none; }
+  .bar-center { position: static; transform: none; gap: 10px; }
+  .bar-center .bar-date { display: none; }
+
+  /* Dock stays a floating pill, just smaller; icon-only (labels are the rooms). */
   .dock {
-    bottom: 0;
-    left: 0;
-    right: 0;
-    transform: none;
-    width: 100%;
-    border-radius: 0;
-    border-left: 0;
-    border-right: 0;
-    border-bottom: 0;
-    justify-content: space-around;
-    padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+    bottom: 12px;
+    gap: 6px;
+    padding: 7px 8px;
+    padding-bottom: calc(7px + env(safe-area-inset-bottom));
   }
-  .dock-app { width: auto; gap: 4px; }
-  .dock-app .icon { width: 42px; height: 42px; }
-  .dock-app[aria-current='page']::after { bottom: -1px; }
+  .dock-app { width: 40px; height: 40px; }
+  .dock-app .icon svg { width: 20px; height: 20px; }
+
+  /* Front door */
+  .home-name { font-size: 26px; }
+  .home-line { font-size: 16px; }
+  .lately { gap: 12px 20px; margin-top: 24px; }
+  .home-hint { margin-top: 28px; }
 
   .room-title { font-size: 1.6rem; }
   .room-lead { font-size: 1.15rem; }
