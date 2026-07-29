@@ -11,7 +11,8 @@ const here = dirname(fileURLToPath(import.meta.url));
 
 // Resolve the live Tempest release so the card version tracks the tag at render
 // time. Falls back to a curated value so OG rendering still proceeds on failure.
-const TAGS_URL = 'https://api.github.com/repos/crenshawdev/tempest/tags?per_page=1';
+const TAGS_URL =
+  'https://git.jcrenshaw.dev/api/v1/repos/crenshawdev/tempest/tags?limit=1';
 const TEMPEST_FALLBACK = '2.11.0';
 
 async function resolveTempestVersion() {
@@ -19,11 +20,11 @@ async function resolveTempestVersion() {
     const res = await fetch(TAGS_URL, {
       headers: {
         'User-Agent': 'jcrenshaw.dev build',
-        Accept: 'application/vnd.github+json',
+        Accept: 'application/json',
       },
       signal: AbortSignal.timeout(8000),
     });
-    if (!res.ok) throw new Error(`GitHub tags ${res.status}`);
+    if (!res.ok) throw new Error(`Forgejo tags ${res.status}`);
     const tags = await res.json();
     const name = Array.isArray(tags) ? tags[0]?.name : null;
     if (!name) throw new Error('no tags returned');
